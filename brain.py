@@ -57,4 +57,6 @@ class BRain:
 mybrain = BRain()
 mybrain.PrintSettings()
 
+# essa é uma mensagem para eu do futuro. Git é muito maneiro!!!
+
 
