@@ -20,23 +20,41 @@ class BRain:
     :param file: file name of the input CSV data (string)
     :param outfile: sets the output file of the network (string)
     '''
-    def __init__(self, infile, file, outfile):
-        self.infile = infile
-        self.file = file
-        self.outfile = outfile    
-    
-    
-    def LoadDataFrame(self):   
-        try:
-            dataframe = pd.read_csv(os.path.join(self.infile, self.file), sep=",", decimal='.')
-        except:
-            print('Unexpected error:', sys.exc_info()[0])          
-        return dataframe
+    def __init__(self):
+        self.IN_CSV_LIST = settings.IN_CSV_LIST
+        self.OUT_CSV_LIST = settings.OUT_CSV_LIST
+        self.LAT_LIMIT = settings.LAT_LIMIT
+        self.LON_LIMIT = settings.LON_LIMIT
         
-mybrain = BRain(settings.INFILE,
-                settings.FILE,
-                settings.OUTFILE)
+        
+    def LoadCSV(self, path, file):   
+        if file.startswith(".", 0, len(file)): 
+            filename = os.path.splitext(file)[0]
+            print("File name starts with point: {} - Skipping...".format(filename))
+        elif file.endswith(".csv"):
+            try:
+                dataframe = pd.read_csv(os.path.join(path, file), sep=",", decimal='.')
+            except:
+                print('Unexpected error:', sys.exc_info()[0])          
+            return dataframe
+           
+    
+    def ExtractRegion(self):
+        for file in os.listdir(self.IN_CSV_LIST):
+            print("Loading dataframe from file: ", file)
+            dataframe = self.LoadCSV(self.IN_CSV_LIST, file)
+            print("Extracting region from file '{}' using LAT limits: '{}' and LON limits: '{}'".format(file, self.LAT_LIMIT, self.LON_LIMIT))
+            subset = np.where(
+                    (dataframe['lat']<=self.LAT_LIMIT[1]) &
+                    (dataframe['lat']>=self.LAT_LIMIT[0]) &
+                    (dataframe['lon']<=self.LON_LIMIT[1]) &
+                    (dataframe['lon']>=self.LON_LIMIT[0]))
+            
+    def PrintSettings(self):
+        print(self.__dict__)
 
-customdf = pd.DataFrame()
+
+mybrain = BRain()
+mybrain.PrintSettings()
 
 
