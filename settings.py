@@ -7,7 +7,7 @@ Created on Sat Feb  2 15:31:35 2019
 """
 
 IN_CSV_LIST = '/media/DATA/tmp/datasets/test'
-OUT_CSV_LIST = '/home/rainfall/tmp/datasets/regional_DB' 
+OUT_CSV_LIST = '/media/DATA/tmp/datasets/regional_DB' 
 
 # Geographical coordinates for regional subset:
 # The parameters follow the sctructure: latlim=[min, max] and lonlim=[min, max]
