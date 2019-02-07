@@ -25,9 +25,19 @@ class BRain:
         self.OUT_CSV_LIST = settings.OUT_CSV_LIST
         self.LAT_LIMIT = settings.LAT_LIMIT
         self.LON_LIMIT = settings.LON_LIMIT
+        self.THRESHOLD_RAIN = settings.THRESHOLD_RAIN
         
         
     def LoadCSV(self, path, file):
+        '''
+        Load CSV files (original)
+    
+        :param path: sets the csv files path (string)
+        :param file: file name or file list (string)
+        :return:  dataframe (DataFrame)
+        
+        '''
+        
         if file.startswith(".", 0, len(file)): 
             print("File name starts with point: {} - Skipping...".format(file))
         elif file.endswith(".csv"):
@@ -42,6 +52,14 @@ class BRain:
            
     
     def ExtractRegion(self, dataframe):  
+        '''
+        Extract regional areas from the global dataset (original)
+    
+        :param dataframe: original global dataframe (DataFrame)
+        :return:  dataframe_regional (DataFrame)
+        
+        '''
+        
         print("Extracting region from dataframe using LAT limits: '{}' and LON limits: '{}'".format(
                 self.LAT_LIMIT, 
                 self.LON_LIMIT))
@@ -56,16 +74,52 @@ class BRain:
         dataframe_regional=dataframe.iloc[subset]
         dataframe_regional.drop(['numpixs'], axis=1, inplace=True)
         print("Extraction completed!")
-        return dataframe_regional
         
+        return dataframe_regional
+    
+    
+    def ThresholdRainNoRain(self, dataframe_regional):
+        '''
+        Defines the minimum threshold to consider in the Rain Dataset
+    
+        :param dataframe_regional: the regional dataset with all pixels (rain and no rain)(DataFrame)
+        :return:  rain  and norain dataframes (DataFrame)
+        
+        '''
+ 
+        # Rain/No Rain threshold(th):
+        threshold_rain = self.THRESHOLD_RAIN
+        rain_pixels = np.where((dataframe_regional['sfcprcp']>=threshold_rain))
+        norain_pixels = np.where((dataframe_regional['sfcprcp']<threshold_rain)) 
+        
+        df_reg_copy = dataframe_regional.copy()
+        dataframe_rain = df_reg_copy.iloc[rain_pixels] 
+        dataframe_norain = df_reg_copy.iloc[norain_pixels]
+        print("Dataframes Rain and NoRain created!")
+
+        return dataframe_rain, dataframe_norain
+ 
 
     def PrintSettings(self):
+        '''
+        Shows the settings of the main parameters necessary to process the algorithm.
+        
+        '''
+        
         print(self.__dict__)
 
 
     
 mybrain = BRain()
-meudataframe = mybrain.LoadCSV('/media/DATA/tmp/datasets/test/', 'CSU.LSWG.201410.bin.csv')
-meudataframerecortado = mybrain.ExtractRegion(meudataframe)
+for idx, elemento in enumerate(os.listdir(mybrain.IN_CSV_LIST)):
+    print("posicao do loop: {} | elemento da pasta: {}".format(idx, elemento))
+    dataframe_original = mybrain.LoadCSV(mybrain.IN_CSV_LIST, elemento)
+    dataframe_regional = mybrain.ExtractRegion(dataframe_original)
+    dataframe_rain, dataframe_norain = mybrain.ThresholdRainNoRain(dataframe_regional)
+#    dataframe_rain.to_csv(os.path.join(pathrain, rainDB),index=False,sep=",",decimal='.')
+#    print("The file ", rainDB ," was genetared!")
+#    dataframe_norain.to_csv(os.path.join(pathnorain, norainDB),index=False,sep=",",decimal='.')
+#    print("The file ", norainDB ," was genetared!")
+
 
 
