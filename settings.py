@@ -5,12 +5,14 @@ Created on Sat Feb  2 15:31:35 2019
 
 @author: rainfall
 """
-# Path for the CSV's (input and output):
-IN_CSV_LIST = '/media/DATA/tmp/datasets/teste'
-OUT_CSV_LIST = '/media/DATA/tmp/datasets/teste' 
+from decouple import config
 
-RAIN_CSV = '/media/DATA/tmp/datasets/regional/rain'
-NORAIN_CSV = '/media/DATA/tmp/datasets/regional/norain'
+# Path for the CSV's (input and output):
+IN_CSV_LIST = config('IN_CSV_LIST', default='')
+OUT_CSV_LIST = config('OUT_CSV_LIST', default='')
+
+RAIN_CSV = config('RAIN_CSV', default='')
+NORAIN_CSV = config('NORAIN_CSV', default='')
 
 # Geographical coordinates for regional subset:
 # The parameters follow the sctructure: latlim=[min, max] and lonlim=[min, max]
