@@ -26,6 +26,8 @@ class BRain:
         self.LAT_LIMIT = settings.LAT_LIMIT
         self.LON_LIMIT = settings.LON_LIMIT
         self.THRESHOLD_RAIN = settings.THRESHOLD_RAIN
+        self.RAIN_CSV = settings.RAIN_CSV
+        self.NORAIN_CSV = settings.NORAIN_CSV
         
         
     def LoadCSV(self, path, file):
@@ -37,13 +39,22 @@ class BRain:
         :return:  dataframe (DataFrame)
         
         '''
+        column_types = {'numpixs': 'int64', 'lat': 'float64','lon': 'float64','sfccode': 'float64','T2m': 'float64',
+                        'tcwv': 'float64','skint': 'float64','sfcprcp': 'float64','cnvprcp': 'float64',
+                        '10V': 'float64','10H': 'float64','18V': 'float64','18H': 'float64',
+                        '23V': 'float64','36V': 'float64','36H': 'float64','89V': 'float64',
+                        '89H': 'float64','166V': 'float64','166H': 'float64','186V': 'float64',
+                        '190V': 'float64','emis10V': 'float64', 'emis10H': 'float64','emis18V': 'float64',
+                        'emis18H': 'float64','emis23V': 'float64','emis36V': 'float64','emis36H': 'float64',
+                        'emis89V': 'float64','emis89H': 'float64', 'emis166V': 'float64', 'emis166H': 'float64',
+                        'emis186V': 'float64','emis190V': 'float64'}
         
         if file.startswith(".", 0, len(file)): 
             print("File name starts with point: {} - Skipping...".format(file))
         elif file.endswith(".csv"):
             try:
-#               dataframe = pd.DataFrame()
-                dataframe = pd.read_csv(os.path.join(path, file), sep=',', header=5, skipinitialspace=True, decimal='.')
+                dataframe = pd.DataFrame()
+                dataframe = pd.read_csv(os.path.join(path, file), sep=',', header=5, skipinitialspace=True, decimal='.', dtype=column_types)
                 print('Dataframe {} was loaded'.format(file))
             except:
                 print('Unexpected error:', sys.exc_info()[0])
@@ -114,10 +125,20 @@ mybrain = BRain()
 for idx, elemento in enumerate(os.listdir(mybrain.IN_CSV_LIST)):
     print("posicao do loop: {} | elemento da pasta: {}".format(idx, elemento))
     dataframe_original = mybrain.LoadCSV(mybrain.IN_CSV_LIST, elemento)
+    #-------------------------------------------------------------------------
     dataframe_regional = mybrain.ExtractRegion(dataframe_original)
+    data=elemento[9:15]
+    dataframe_reg_name="Regional_BR_"+data+"_var2d.csv"
+    dataframe_regional.to_csv(os.path.join(mybrain.OUT_CSV_LIST, dataframe_reg_name),index=False,sep=",",decimal='.')
+     #-------------------------------------------------------------------------
     dataframe_rain, dataframe_norain = mybrain.ThresholdRainNoRain(dataframe_regional)
-#    dataframe_rain.to_csv(os.path.join(pathrain, rainDB),index=False,sep=",",decimal='.')
-#    print("The file ", rainDB ," was genetared!")
+    dataframe_rain_name="Regional_BR_rain_"+data+"_var2d.csv"
+    dataframe_norain_name="Regional_BR_norain_"+data+"_var2d.csv"
+    dataframe_rain.to_csv(os.path.join(mybrain.RAIN_CSV, dataframe_rain_name),index=False,sep=",",decimal='.')
+    dataframe_norain.to_csv(os.path.join(mybrain.NORAIN_CSV, dataframe_norain_name),index=False,sep=",",decimal='.')
+
+#    print("The file ", dataframe_rain ," was genetared!")
+#    print("The file ", dataframe_norain ," was genetared!")
 #    dataframe_norain.to_csv(os.path.join(pathnorain, norainDB),index=False,sep=",",decimal='.')
 #    print("The file ", norainDB ," was genetared!")
 
