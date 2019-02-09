@@ -129,7 +129,7 @@ class BRain:
             else:
                 logging.debug(file)
                 print("posicao do loop: {} | elemento da pasta: {}".format(idx, file))
-                df = pd.read_csv(os.path.join(self.RAIN_CSV, file), sep=',', decimal='.', encoding="utf8")
+                df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.', encoding="utf8")
                 df.reset_index(drop=True, inplace=True)
                 frames.append(df)
                 logging.debug(frames)
@@ -159,10 +159,33 @@ class BRain:
         
         return dataframe_yrly
     
-    
+    def FitConcatenationDF(self, path, file):
+        
+        dataframe = pd.read_csv(os.path.join(path, file), sep=',', decimal='.', encoding="utf8")
+
+        pos33=np.where(np.isnan(dataframe.iloc[:,33]))
+        val34=dataframe.iloc[:,34].iloc[pos33]
+        vec_correto=dataframe.iloc[:,33].fillna(val34)
+        dataframe["emis190V_OK"]=""
+        dataframe["emis190V_OK"]=vec_correto
+
+        dataframe_copy_OK=dataframe[['lat', 'lon', 'sfccode', 'T2m', 'tcwv', 'skint', 'sfcprcp',
+                'cnvprcp', '10V', '10H', '18V', '18H', '23V', '36V', '36H', '89V',
+                '89H', '166V', '166H', '186V', '190V', 'emis10V', 'emis10H', 'emis18V',
+                'emis18H', 'emis23V', 'emis36V', 'emis36H', 'emis89V', 'emis89H',
+                'emis166V', 'emis166H', 'emis186V',]].copy()
+
+        dataframe_copy_OK["emis190V"]=vec_correto
+        file_name=os.path.splitext(file)[0]+"_OK.csv"
+        dataframe_copy_OK.to_csv(os.path.join(path, file_name),index=False,sep=",",decimal='.')
+        print("The file ", file_name ," was genetared!")
+        
+        return dataframe_copy_OK
+        
     
 mybrain = BRain()
-dataframe_yrly=mybrain.ConcatenationMonthlyDF(settings.RAIN_CSV, "Yearly_BR_rain_var2d.csv")
+#dataframe_yrly = mybrain.ConcatenationMonthlyDF(settings.RAIN_CSV, "Yearly_BR_rain_var2d.csv")
+dataframe_OK = mybrain.FitConcatenationDF(settings.RAIN_CSV, "Yearly_BR_rain_var2d.csv")
 
 ###  Loop for CREATION of the regional and rain and norain dataframes.
 # You can change the INPUT/OUTPUT PATH depending on your need:
