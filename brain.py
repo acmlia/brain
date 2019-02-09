@@ -10,6 +10,8 @@ import settings
 import numpy as np
 import pandas as pd
 import os, sys
+import logging
+
 
 
 class BRain:
@@ -28,6 +30,7 @@ class BRain:
         self.THRESHOLD_RAIN = settings.THRESHOLD_RAIN
         self.RAIN_CSV = settings.RAIN_CSV
         self.NORAIN_CSV = settings.NORAIN_CSV
+        self.COLUMN_TYPES = settings.COLUMN_TYPES
         
         
     def LoadCSV(self, path, file):
@@ -39,22 +42,13 @@ class BRain:
         :return:  dataframe (DataFrame)
         
         '''
-        column_types = {'numpixs': 'int64', 'lat': 'float64','lon': 'float64','sfccode': 'float64','T2m': 'float64',
-                        'tcwv': 'float64','skint': 'float64','sfcprcp': 'float64','cnvprcp': 'float64',
-                        '10V': 'float64','10H': 'float64','18V': 'float64','18H': 'float64',
-                        '23V': 'float64','36V': 'float64','36H': 'float64','89V': 'float64',
-                        '89H': 'float64','166V': 'float64','166H': 'float64','186V': 'float64',
-                        '190V': 'float64','emis10V': 'float64', 'emis10H': 'float64','emis18V': 'float64',
-                        'emis18H': 'float64','emis23V': 'float64','emis36V': 'float64','emis36H': 'float64',
-                        'emis89V': 'float64','emis89H': 'float64', 'emis166V': 'float64', 'emis166H': 'float64',
-                        'emis186V': 'float64','emis190V': 'float64'}
         
         if file.startswith(".", 0, len(file)): 
             print("File name starts with point: {} - Skipping...".format(file))
         elif file.endswith(".csv"):
             try:
                 dataframe = pd.DataFrame()
-                dataframe = pd.read_csv(os.path.join(path, file), sep=',', header=5, skipinitialspace=True, decimal='.', dtype=column_types)
+                dataframe = pd.read_csv(os.path.join(path, file), sep=',', header=5, skipinitialspace=True, decimal='.', dtype=self.COLUMN_TYPES)
                 print('Dataframe {} was loaded'.format(file))
             except:
                 print('Unexpected error:', sys.exc_info()[0])
@@ -118,29 +112,84 @@ class BRain:
         '''
         
         print(self.__dict__)
+        
+        
+    def ConcatenationMonthlyDF(self, path, dataframe_name):
+        '''
+        Concatenate the monthly rain and norain dataframes into yearly dataframes.
+        
+        '''
+        
+        # ATTENTION: Set the right path, if is for RAIN or NORAIN dataframes:
+        
+        frames = []
+        for idx, file in enumerate(os.listdir(path)):
+            if file.startswith(".", 0, len(file)): 
+                print("File name starts with point: ", file)
+            else:
+                logging.debug(file)
+                print("posicao do loop: {} | elemento da pasta: {}".format(idx, file))
+                df = pd.read_csv(os.path.join(self.RAIN_CSV, file), sep=',', decimal='.', encoding="utf8")
+                df.reset_index(drop=True, inplace=True)
+                frames.append(df)
+                logging.debug(frames)
+                
+        # Concatenation of the monthly Dataframes into the yearly Dataframe:
+         
+        try:
+            dataframe_yrly = pd.concat(frames, sort=False, ignore_index=True, verify_integrity=True)
+        except ValueError as e:
+            print("ValueError:", e)     
+    
+        # Repairing the additional column wrongly generated in concatenation:
 
+        if np.where(np.isfinite(dataframe_yrly.iloc[:,34])):
+            dataframe_yrly["correto"]=dataframe_yrly.iloc[:,34]
+        else:
+            #pos=np.where(isnan())
+            dataframe_yrly["correto"]=dataframe_yrly.iloc[:,33]
 
+       
+        dataframe_yrly_name=dataframe_name
+      
+        #------        
+        # Saving the new output DB's (rain and no rain):
+        dataframe_yrly.to_csv(os.path.join(path, dataframe_yrly_name),index=False,sep=",",decimal='.')
+        print("The file ", dataframe_yrly_name ," was genetared!")
+        
+        return dataframe_yrly
+    
+    
     
 mybrain = BRain()
-for idx, elemento in enumerate(os.listdir(mybrain.IN_CSV_LIST)):
-    print("posicao do loop: {} | elemento da pasta: {}".format(idx, elemento))
-    dataframe_original = mybrain.LoadCSV(mybrain.IN_CSV_LIST, elemento)
-    #-------------------------------------------------------------------------
-    dataframe_regional = mybrain.ExtractRegion(dataframe_original)
-    data=elemento[9:15]
-    dataframe_reg_name="Regional_BR_"+data+"_var2d.csv"
-    dataframe_regional.to_csv(os.path.join(mybrain.OUT_CSV_LIST, dataframe_reg_name),index=False,sep=",",decimal='.')
-     #-------------------------------------------------------------------------
-    dataframe_rain, dataframe_norain = mybrain.ThresholdRainNoRain(dataframe_regional)
-    dataframe_rain_name="Regional_BR_rain_"+data+"_var2d.csv"
-    dataframe_norain_name="Regional_BR_norain_"+data+"_var2d.csv"
-    dataframe_rain.to_csv(os.path.join(mybrain.RAIN_CSV, dataframe_rain_name),index=False,sep=",",decimal='.')
-    dataframe_norain.to_csv(os.path.join(mybrain.NORAIN_CSV, dataframe_norain_name),index=False,sep=",",decimal='.')
+dataframe_yrly=mybrain.ConcatenationMonthlyDF(settings.RAIN_CSV, "Yearly_BR_rain_var2d.csv")
+
+###  Loop for CREATION of the regional and rain and norain dataframes.
+# You can change the INPUT/OUTPUT PATH depending on your need:
+
+#------------------------------------------------------------------------------
+#for idx, elemento in enumerate(os.listdir(mybrain.IN_CSV_LIST)):
+#    print("posicao do loop: {} | elemento da pasta: {}".format(idx, elemento))
+#    dataframe_original = mybrain.LoadCSV(mybrain.IN_CSV_LIST, elemento)
+#    #-------------------------------------------------------------------------
+#    dataframe_regional = mybrain.ExtractRegion(dataframe_original)
+#    data=elemento[9:15]
+#    dataframe_reg_name="Regional_BR_"+data+"_var2d.csv"
+#    dataframe_regional.to_csv(os.path.join(mybrain.OUT_CSV_LIST, dataframe_reg_name),index=False,sep=",",decimal='.')
+#     #-------------------------------------------------------------------------
+#    dataframe_rain, dataframe_norain = mybrain.ThresholdRainNoRain(dataframe_regional)
+#    dataframe_rain_name="Regional_BR_rain_"+data+"_var2d.csv"
+#    dataframe_norain_name="Regional_BR_norain_"+data+"_var2d.csv"
+#    dataframe_rain.to_csv(os.path.join(mybrain.RAIN_CSV, dataframe_rain_name),index=False,sep=",",decimal='.')
+#    dataframe_norain.to_csv(os.path.join(mybrain.NORAIN_CSV, dataframe_norain_name),index=False,sep=",",decimal='.')
 
 #    print("The file ", dataframe_rain ," was genetared!")
 #    print("The file ", dataframe_norain ," was genetared!")
 #    dataframe_norain.to_csv(os.path.join(pathnorain, norainDB),index=False,sep=",",decimal='.')
 #    print("The file ", norainDB ," was genetared!")
+#------------------------------------------------------------------------------
 
+###  Loop for CONCATENATION of the rain and norain dataframes in Yearly Dataframes:
+# You can change the INPUT/OUTPUT PATH depending on your need:
 
-
+#------------------------------------------------------------------------------
