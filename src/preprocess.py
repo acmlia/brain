@@ -12,8 +12,14 @@ class Preprocess:
     :param file: file name of the input CSV data (string)
     :param outfile: sets the output file of the network (string)
     """
-
-    def __init__(self, IN_CSV_LIST,OUT_CSV_LIST,LAT_LIMIT,LON_LIMIT,THRESHOLD_RAIN,RAIN_CSV,NORAIN_CSV,COLUMN_TYPES):
+    def __init__(self, IN_CSV_LIST=None,
+                 OUT_CSV_LIST=None,
+                 LAT_LIMIT=None,
+                 LON_LIMIT=None,
+                 THRESHOLD_RAIN=None,
+                 RAIN_CSV=None,
+                 NORAIN_CSV=None,
+                 COLUMN_TYPES=None):
         self.IN_CSV_LIST = IN_CSV_LIST
         self.OUT_CSV_LIST = OUT_CSV_LIST
         self.LAT_LIMIT = LAT_LIMIT
@@ -22,6 +28,7 @@ class Preprocess:
         self.RAIN_CSV = RAIN_CSV
         self.NORAIN_CSV = NORAIN_CSV
         self.COLUMN_TYPES = COLUMN_TYPES
+
 
     def print_settings(self):
         """
@@ -167,4 +174,3 @@ class Preprocess:
         print("The file ", file_name, " was genetared!")
 
         return dataframe_copy_OK
-
