@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 import os, sys
 import logging
+from PRE_PROCESS_TRAINING.PCA import HelloFunction
 
 
 
@@ -120,8 +121,6 @@ class BRain:
         
         '''
         
-        # ATTENTION: Set the right path, if is for RAIN or NORAIN dataframes:
-        
         frames = []
         for idx, file in enumerate(os.listdir(path)):
             if file.startswith(".", 0, len(file)): 
@@ -134,13 +133,15 @@ class BRain:
                 frames.append(df)
                 logging.debug(frames)
                 
+        #------        
         # Concatenation of the monthly Dataframes into the yearly Dataframe:
          
         try:
             dataframe_yrly = pd.concat(frames, sort=False, ignore_index=True, verify_integrity=True)
         except ValueError as e:
             print("ValueError:", e)     
-    
+            
+        #------
         # Repairing the additional column wrongly generated in concatenation:
 
         if np.where(np.isfinite(dataframe_yrly.iloc[:,34])):
@@ -185,8 +186,8 @@ class BRain:
     
 mybrain = BRain()
 #dataframe_yrly = mybrain.ConcatenationMonthlyDF(settings.RAIN_CSV, "Yearly_BR_rain_var2d.csv")
-dataframe_OK = mybrain.FitConcatenationDF(settings.RAIN_CSV, "Yearly_BR_rain_var2d.csv")
-
+#dataframe_OK = mybrain.FitConcatenationDF(settings.RAIN_CSV, "Yearly_BR_rain_var2d.csv")
+HelloFunction()
 ###  Loop for CREATION of the regional and rain and norain dataframes.
 # You can change the INPUT/OUTPUT PATH depending on your need:
 
