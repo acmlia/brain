@@ -6,7 +6,9 @@ import logging
 
 class Preprocess:
     """
-    This is my custom rain classifier embeded with an automatic screening method
+    This modules treat the pre processing data.
+    It can call the functions: LoadCSV, ExtractRegion, ThresholdRainNoRain,
+    ConcatenationMonthlyDF and FitConcatenationDF.
 
     :param infile: sets the input file path (string)
     :param file: file name of the input CSV data (string)
