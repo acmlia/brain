@@ -2,6 +2,7 @@
 
 import logging
 import settings
+import os, sys
 from src.preprocess import Preprocess
 
 
@@ -22,13 +23,34 @@ def main():
     # '---------------------'
 
     minharede = Preprocess(
-        IN_CSV_LIST, OUT_CSV_LIST, RAIN_CSV,
-        NORAIN_CSV, LAT_LIMIT, LON_LIMIT,
-        THRESHOLD_RAIN, COLUMN_TYPES)
+        IN_CSV_LIST,
+        OUT_CSV_LIST,
+        RAIN_CSV,
+        NORAIN_CSV,
+        LAT_LIMIT,
+        LON_LIMIT,
+        THRESHOLD_RAIN,
+        COLUMN_TYPES)
 
     # Print the network initial settings
     minharede.print_settings()
+    
+    ## Loop for CREATION of the regional and rain and norain dataframes.
+    # You can change the INPUT/OUTPUT PATH depending on your need:
 
+    # ------------------------------------------------------------------------------
+    # for elemento in os.listdir(minharede.IN_CSV_LIST):
+    #     print('elemento da pasta: {}'.format(elemento))
+    #     dataframe_regional = minharede.LoadCSV(minharede.IN_CSV_LIST, elemento)
+    #     data = elemento[9:16]
+    #     dataframe_rain, dataframe_norain = minharede.ThresholdRainNoRain(dataframe_regional)
+    #     dataframe_rain_name = "br_clip_rain_"+data+"_var2d.csv"
+    #     dataframe_norain_name = "br_clip_norain_"+data+"_var2d.csv"
+    #     dataframe_rain.to_csv(os.path.join(minharede.RAIN_CSV, dataframe_rain_name), index=False, sep=",", decimal='.')
+    #     dataframe_norain.to_csv(os.path.join(minharede.NORAIN_CSV, dataframe_norain_name), index=False, sep=",", decimal='.')
+    
+    minharede.ConcatenationMonthlyDF(RAIN_CSV, "yearly_br_rain_var2d.csv")
+    minharede.ConcatenationMonthlyDF(NORAIN_CSV, "yearly_br_norain_var2d.csv")
 
 if __name__ == '__main__':
     main()

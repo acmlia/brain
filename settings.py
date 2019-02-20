@@ -22,7 +22,7 @@ LON_LIMIT=[-75.0, -35.0]
 # Minimal threshold of rain rate:
 THRESHOLD_RAIN=0.1
 
-# Identification of dtype for Dataframe in LOadCSV:
+# Identification of dtype for Dataframe in LoadCSV:
 COLUMN_TYPES = {'numpixs': 'int64', 'lat': 'float64','lon': 'float64','sfccode': 'float64','T2m': 'float64',
                         'tcwv': 'float64','skint': 'float64','sfcprcp': 'float64','cnvprcp': 'float64',
                         '10V': 'float64','10H': 'float64','18V': 'float64','18H': 'float64',

@@ -16,19 +16,19 @@ class Preprocess:
     """
     def __init__(self, IN_CSV_LIST=None,
                  OUT_CSV_LIST=None,
+                 RAIN_CSV=None,
+                 NORAIN_CSV=None,
                  LAT_LIMIT=None,
                  LON_LIMIT=None,
                  THRESHOLD_RAIN=None,
-                 RAIN_CSV=None,
-                 NORAIN_CSV=None,
                  COLUMN_TYPES=None):
         self.IN_CSV_LIST = IN_CSV_LIST
         self.OUT_CSV_LIST = OUT_CSV_LIST
+        self.RAIN_CSV = RAIN_CSV
+        self.NORAIN_CSV = NORAIN_CSV
         self.LAT_LIMIT = LAT_LIMIT
         self.LON_LIMIT = LON_LIMIT
         self.THRESHOLD_RAIN = THRESHOLD_RAIN
-        self.RAIN_CSV = RAIN_CSV
-        self.NORAIN_CSV = NORAIN_CSV
         self.COLUMN_TYPES = COLUMN_TYPES
 
 
@@ -49,16 +49,18 @@ class Preprocess:
         :return:  dataframe (DataFrame)
 
         '''
+        #ATTENTION: include "header=5, skipinitialspace=True" parameters for the dataframe_original
 
         if file.startswith(".", 0, len(file)):
             print("File name starts with point: {} - Skipping...".format(file))
         elif file.endswith(".csv"):
             try:
                 dataframe = pd.DataFrame()
-                dataframe = pd.read_csv(os.path.join(path, file), sep=',', header=5, skipinitialspace=True, decimal='.',
+                dataframe = pd.read_csv(os.path.join(path, file), sep=',', decimal='.',
                                         dtype=self.COLUMN_TYPES)
                 print('Dataframe {} was loaded'.format(file))
             except:
+#                dataframe = pd.DataFrame()
                 print('Unexpected error:', sys.exc_info()[0])
 
         return dataframe
@@ -117,33 +119,31 @@ class Preprocess:
         '''
 
         # ATTENTION: Set the right path, if is for RAIN or NORAIN dataframes:
-
+        soma = 0
         frames = []
         for idx, file in enumerate(os.listdir(path)):
             if file.startswith(".", 0, len(file)):
                 print("File name starts with point: ", file)
             else:
-                logging.debug(file)
-                print("posicao do loop: {} | elemento da pasta: {}".format(idx, file))
+                # logging.debug(file)
+                # print("posicao do loop: {} | elemento da pasta: {}".format(idx, file))
                 df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.', encoding="utf8")
                 df.reset_index(drop=True, inplace=True)
                 frames.append(df)
-                logging.debug(frames)
+                # logging.debug(frames)
 
         # Concatenation of the monthly Dataframes into the yearly Dataframe:
-
         try:
             dataframe_yrly = pd.concat(frames, sort=False, ignore_index=True, verify_integrity=True)
         except ValueError as e:
             print("ValueError:", e)
 
-            # Repairing the additional column wrongly generated in concatenation:
-
-        if np.where(np.isfinite(dataframe_yrly.iloc[:, 34])):
-            dataframe_yrly["correto"] = dataframe_yrly.iloc[:, 34]
-        else:
-            # pos=np.where(isnan())
-            dataframe_yrly["correto"] = dataframe_yrly.iloc[:, 33]
+        # Repairing the additional column wrongly generated in concatenation:
+        # if np.where(np.isfinite(dataframe_yrly.iloc[:, 34])):
+        #     dataframe_yrly["correto"] = dataframe_yrly.iloc[:, 34]
+        # else:
+        #     # pos=np.where(isnan())
+        #     dataframe_yrly["correto"] = dataframe_yrly.iloc[:, 33]
 
         dataframe_yrly_name = dataframe_name
 
