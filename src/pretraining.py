@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import os, sys
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
@@ -26,6 +27,33 @@ class PreTraining:
         
         
         
+    def AdditionalInputVariables(self, path, file):
+        '''
+        Create new input variables from the dataset, as PCT, SSI, MPDI, etc...
+        '''
+
+        if file.startswith(".", 0, len(file)):
+            print("File name starts with point: {} - Skipping...".format(file))
+        elif file.endswith(".csv"):
+            try:
+                df = pd.DataFrame()
+                df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.',
+                                        dtype=self.COLUMN_TYPES)
+                print('Dataframe {} was loaded'.format(file))
+
+                df['10VH'] = df['10V'] - df['10H']
+                df['18VH'] = df['18V'] - df['18H']
+                df['36VH'] = df['36V'] - df['36H']
+                df['89VH'] = df['89V'] - df['89H']
+                df['166VH'] = df['166V'] - df['166H']
+                df['183VH'] = df['186V'] - df['190H']
+                df['SSI'] = df['18V'] - df['36V']
+                df['delta_neg'] = df['18V'] - df['18H']
+                df['delta_pos'] = df['18V'] + df['18H']
+                df['MPDI'] = np.divide(df['delta_neg'], df['delta_pos'])
+                df['MPDI_scaled'] = df['MPDI']*600
+
+
     def AnalysisPCA(self, ):
         '''
         Analyse the PCA decomposition to help with the input variables decision.
