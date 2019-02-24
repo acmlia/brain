@@ -119,7 +119,6 @@ class Preprocess:
         '''
 
         # ATTENTION: Set the right path, if is for RAIN or NORAIN dataframes:
-        soma = 0
         frames = []
         for idx, file in enumerate(os.listdir(path)):
             if file.startswith(".", 0, len(file)):
@@ -176,3 +175,11 @@ class Preprocess:
         print("The file ", file_name, " was genetared!")
 
         return dataframe_copy_OK
+    
+    def testOGR(self):
+        try:
+            from osgeo import ogr
+            print('Import of ogr from osgeo worked.  Hurray!\n')
+        except:
+            print('Import of ogr from osgeo failed\n\n')
+

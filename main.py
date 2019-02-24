@@ -49,8 +49,9 @@ def main():
     #     dataframe_rain.to_csv(os.path.join(minharede.RAIN_CSV, dataframe_rain_name), index=False, sep=",", decimal='.')
     #     dataframe_norain.to_csv(os.path.join(minharede.NORAIN_CSV, dataframe_norain_name), index=False, sep=",", decimal='.')
     
-    minharede.ConcatenationMonthlyDF(RAIN_CSV, "yearly_br_rain_var2d.csv")
-    minharede.ConcatenationMonthlyDF(NORAIN_CSV, "yearly_br_norain_var2d.csv")
+    # minharede.ConcatenationMonthlyDF(RAIN_CSV, "yearly_br_rain_var2d.csv")
+    # minharede.ConcatenationMonthlyDF(NORAIN_CSV, "yearly_br_norain_var2d.csv")
+    minharede.testOGR()
 
 if __name__ == '__main__':
     main()
