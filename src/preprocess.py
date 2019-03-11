@@ -36,7 +36,7 @@ class Preprocess:
         """
         Shows the settings of the main parameters necessary to process the algorithm.
         """
-        logging.info(f'Initial settings:\n')
+        logging.DEBUG(f'Initial settings:\n')
         for key, value in self.__dict__.items():
             logging.info(f'{key} = {value}')
 
@@ -51,21 +51,20 @@ class Preprocess:
         '''
         #ATTENTION: include "header=5, skipinitialspace=True" parameters for the dataframe_original
 
+        df = pd.DataFrame()
         if file.startswith(".", 0, len(file)):
             print("File name starts with point: {} - Skipping...".format(file))
         elif file.endswith(".csv"):
-            try:
-                dataframe = pd.DataFrame()
-                dataframe = pd.read_csv(os.path.join(path, file), sep=',', decimal='.',
+            df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.',
                                         dtype=self.COLUMN_TYPES)
-                print('Dataframe {} was loaded'.format(file))
-            except:
-#                dataframe = pd.DataFrame()
-                print('Unexpected error:', sys.exc_info()[0])
+            print('Dataframe {} was loaded'.format(file))
+        if not df.empty:
+            return df
+        else:
+            print("Unexpected file format: {} - Skipping...".format(file))
+            return None
 
-        return dataframe
-
-    def ExtractRegion(self, dataframe):
+    def ExtractRegion(self, regional_frames):
         '''
         Extract regional areas from the global dataset (original)
 
@@ -79,19 +78,19 @@ class Preprocess:
             self.LON_LIMIT))
 
         subset = np.where(
-            (dataframe['lat'] <= self.LAT_LIMIT[1]) &
-            (dataframe['lat'] >= self.LAT_LIMIT[0]) &
-            (dataframe['lon'] <= self.LON_LIMIT[1]) &
-            (dataframe['lon'] >= self.LON_LIMIT[0]))
+            (df['lat'] <= self.LAT_LIMIT[1]) &
+            (df['lat'] >= self.LAT_LIMIT[0]) &
+            (df['lon'] <= self.LON_LIMIT[1]) &
+            (df['lon'] >= self.LON_LIMIT[0]))
 
-        dataframe_regional = dataframe.copy()
-        dataframe_regional = dataframe.iloc[subset]
-        dataframe_regional.drop(['numpixs'], axis=1, inplace=True)
+        df_regional = df.copy()
+        df_regional =df.iloc[subset]
+        df.drop(['numpixs'], axis=1, inplace=True)
         print("Extraction completed!")
 
-        return dataframe_regional
+        return df
 
-    def ThresholdRainNoRain(self, dataframe_regional):
+    def ThresholdRainNoRain(self, df):
         '''
         Defines the minimum threshold to consider in the Rain Dataset
 
@@ -100,17 +99,50 @@ class Preprocess:
 
         '''
 
-        # Rain/No Rain threshold(th):
-        threshold_rain = self.THRESHOLD_RAIN
-        rain_pixels = np.where((dataframe_regional['sfcprcp'] >= threshold_rain))
-        norain_pixels = np.where((dataframe_regional['sfcprcp'] < threshold_rain))
+        if df is None:
+            print('None input where df was expected!')
+        elif not df.empty:
+            # Rain/No Rain threshold(th):
+            threshold_rain = self.THRESHOLD_RAIN
+            rain_pixels = np.where((df['sfcprcp'] >= threshold_rain))
+            size_rain=str(len(rain_pixels[0]))
+            norain_pixels = np.where((df['sfcprcp'] < threshold_rain))
+            size_norain=str(len(norain_pixels[0]))
 
-        df_reg_copy = dataframe_regional.copy()
-        dataframe_rain = df_reg_copy.iloc[rain_pixels]
-        dataframe_norain = df_reg_copy.iloc[norain_pixels]
-        print("Dataframes Rain and NoRain created!")
 
-        return dataframe_rain, dataframe_norain
+            df_reg_copy = df.copy()
+            df_rain = df_reg_copy.iloc[rain_pixels]
+            df_norain = df_reg_copy.iloc[norain_pixels]
+            print("Dataframes Rain and NoRain created!")
+
+            return df_rain, df_norain, size_norain, size_rain
+        else:
+            print('Empty or invalid dataframe!')
+            
+    def TagRainNoRain(self, df):
+        '''
+        Defines the minimum threshold to consider in the Rain Dataset
+
+        :param dataframe_regional: the regional dataset with all pixels (rain and no rain)(DataFrame)
+        :return:  rain  and norain dataframes (DataFrame)
+
+        '''
+
+        if df is None:
+            print('None input where df was expected!')
+        elif not df.empty:
+            # Rain/No Rain threshold(th):
+            threshold_rain = self.THRESHOLD_RAIN
+            rain_pixels = np.where((df['sfcprcp'] >= threshold_rain))
+            norain_pixels = np.where((df['sfcprcp'] < threshold_rain))
+            df['TagRain'] =""
+            df['TagRain'].iloc[rain_pixels] = 1
+            df['TagRain'].iloc[norain_pixels] = 0
+            df_final = df.copy()
+            return df_final
+        else:
+            print('Empty or invalid dataframe!')
+        
 
     def ConcatenationMonthlyDF(self, path, dataframe_name):
         '''
@@ -176,10 +208,5 @@ class Preprocess:
 
         return dataframe_copy_OK
     
-    def testOGR(self):
-        try:
-            from osgeo import ogr
-            print('Import of ogr from osgeo worked.  Hurray!\n')
-        except:
-            print('Import of ogr from osgeo failed\n\n')
+
 
