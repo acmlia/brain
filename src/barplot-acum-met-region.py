@@ -8,7 +8,7 @@ Created on Fri Mar  8 23:52:37 2019
 import pandas as pd
 import os
 
-path = '/mnt/AC9AF51E9AF4E5AC/AMIGOS/mozao/CSV-meteo-regions/'
+path = '/media/DATA/tmp/datasets/regionais/meteo_region_model_output/csv_regions/'
 
 metreg = ['R1','R2','R3','R4','R5']
 
@@ -51,5 +51,4 @@ for reg in metreg:
     ax.set_xlabel("Months from 09/2014 to 08/2015")
     ax.set_title(reg)
     fig = ax.get_figure()
-    fig.savefig('/mnt/AC9AF51E9AF4E5AC/AMIGOS/mozao/'
-                'script-histogramas-R1-R5/plots/'+reg+'.pdf')
+    fig.savefig('/media/DATA/tmp/datasets/regionais/meteo_region_model_output/csv_regions/'+reg+'.pdf')

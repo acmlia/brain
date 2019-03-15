@@ -139,6 +139,7 @@ class Preprocess:
             df['TagRain'].iloc[rain_pixels] = 1
             df['TagRain'].iloc[norain_pixels] = 0
             df_final = df.copy()
+            print(' Dataframe with TagRain was created!')
             return df_final
         else:
             print('Empty or invalid dataframe!')
