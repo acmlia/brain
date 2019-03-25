@@ -90,7 +90,7 @@ class Preprocess:
 
         return df
 
-    def ThresholdRainNoRain(self, df):
+    def ThresholdRainNoRain(self, df, classe):
         '''
         Defines the minimum threshold to consider in the Rain Dataset
 
@@ -105,6 +105,13 @@ class Preprocess:
             # Rain/No Rain threshold(th):
             threshold_rain = self.THRESHOLD_RAIN
             rain_pixels = np.where((df['sfcprcp'] >= threshold_rain))
+            size_rain=str(len(rain_pixels[0]))
+            norain_pixels = np.where((df['sfcprcp'] < threshold_rain))
+            size_norain=str(len(norain_pixels[0]))
+
+            # Division by classes of rain:
+            threshold_rain = self.THRESHOLD_RAIN
+            rain_pixels = np.where((df['CLASSE'] >= threshold_rain))
             size_rain=str(len(rain_pixels[0]))
             norain_pixels = np.where((df['sfcprcp'] < threshold_rain))
             size_norain=str(len(norain_pixels[0]))
@@ -143,7 +150,28 @@ class Preprocess:
             return df_final
         else:
             print('Empty or invalid dataframe!')
-        
+
+    def SelectionByClasse(self, df, c):
+        '''
+        Select pixels from pre-detemined precipitation classes.
+
+        :param dataframe_regional: the regional dataset with all pixels (rain and no rain)(DataFrame)
+        :return:  rain  and norain dataframes (DataFrame)
+
+        '''
+
+        if df is None:
+            print('None input where df was expected!')
+        elif not df.empty:
+            # Division by classes of rain:
+            idx_pxl_classe = np.where((df['CLASSE'] == classe))
+            size_pxl_classe = str(len(pixels_classe[0]))
+            print("Number of pixels by class were counted!")
+
+            return idx_pxl_classe, size_pxl_classe
+        else:
+            print('Empty or invalid dataframe!')
+
 
     def ConcatenationMonthlyDF(self, path, dataframe_name):
         '''

@@ -99,6 +99,52 @@ class GraphicsBuilder:
         fig = go.Figure(data=data, layout=layout)
         plotly.offline.plot(fig, filename=output_file_name)
         return None
+# ------------------------------------------------------------------------------
+    @staticmethod
+    def boxplot_per_classe(dataframe: pd.DataFrame, yvalue1: str, yvalue2: str, yvalue3: str, yvalue4: str,
+                           chart_title: str, output_file_name: str,
+                           ytitle1: str, ytitle2: str, ytitle3: str, ytitle4: str, size_idx1: str,
+                           size_idx2: str, size_idx3: str, size_idx4: str) -> None:
+
+        trace0 = go.Box(
+            y=yvalue1,
+            name=ytitle1+' ('+size_idx1+') ',
+            marker=dict(
+                    color='purple',
+                    #color='rgb(0, 128, 128)',
+            )
+        )
+        trace1 = go.Box(
+            y=yvalue2,
+            name=ytitle2+' ('+size_idx2+') ',
+            marker=dict(
+                    color='darksalmon',
+                   #color='rgb(10, 140, 208)',
+            )
+        )
+        trace2 = go.Box(
+            y=yvalue3,
+            name=ytitle3+' ('+size_idx3+') ',
+            marker=dict(
+                    color='lawngreen',
+                    #color='rgb(0, 128, 128)',
+            )
+        )
+        trace3 = go.Box(
+            y=yvalue4,
+            name=ytitle4+' ('+size_idx4+') ',
+            marker=dict(
+                    color='skyblue',
+                   #color='rgb(10, 140, 208)',
+            )
+        )
+        layout = go.Layout(
+            title=chart_title
+        )
+        data = [trace0, trace1, trace2, trace3]
+        fig = go.Figure(data=data, layout=layout)
+        plotly.offline.plot(fig, filename=output_file_name)
+        return None
 
 
 
