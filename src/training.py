@@ -368,3 +368,7 @@ class Training:
         # serialize weights to HDF5
         model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
         print("Saved model to disk")
+<<<<<<< HEAD
+=======
+
+>>>>>>> 70498da886f140c53060959a27fefd44089e0679

@@ -6,9 +6,12 @@ import os, sys
 import pandas as pd
 import numpy as np
 
+from src.training import Training
+from src.validation import Validation
 from src.graphics_builder import GraphicsBuilder
 from src.preprocess import Preprocess
 from src.pretraining import PreTraining
+
 
 def main() -> object:
     """
@@ -16,34 +19,56 @@ def main() -> object:
     """
     logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S', level=logging.DEBUG)
 
-    IN_CSV_LIST = settings.IN_CSV_LIST
-    OUT_CSV_LIST = settings.OUT_CSV_LIST
-    RAIN_CSV = settings.RAIN_CSV
-    NORAIN_CSV = settings.NORAIN_CSV
-    LAT_LIMIT = settings.LAT_LIMIT
-    LON_LIMIT = settings.LON_LIMIT
-    THRESHOLD_RAIN = settings.THRESHOLD_RAIN
-    COLUMN_TYPES = settings.COLUMN_TYPES
+    # IN_CSV_LIST = settings.IN_CSV_LIST
+    # OUT_CSV_LIST = settings.OUT_CSV_LIST
+    # RAIN_CSV = settings.RAIN_CSV
+    # NORAIN_CSV = settings.NORAIN_CSV
+    # LAT_LIMIT = settings.LAT_LIMIT
+    # LON_LIMIT = settings.LON_LIMIT
+    # THRESHOLD_RAIN = settings.THRESHOLD_RAIN
+    # COLUMN_TYPES = settings.COLUMN_TYPES
 
     # ,---------------------,
     # | Code starts here :) |
     # '---------------------'
 
-    rede_pp = Preprocess(
-        IN_CSV_LIST,
-        OUT_CSV_LIST,
-        RAIN_CSV,
-        NORAIN_CSV,
-        LAT_LIMIT,
-        LON_LIMIT,
-        THRESHOLD_RAIN,
-        COLUMN_TYPES)
+    git_dir = '/mnt/AC9AF51E9AF4E5AC/repos'
 
-    rede_pt = PreTraining(IN_CSV_LIST,
-                          OUT_CSV_LIST,
-                          RAIN_CSV,
-                          NORAIN_CSV,
-                          COLUMN_TYPES)
+    ar0 = Training(random_seed=7,
+                   run_prefix='tf_regr_',
+                   version='R1',
+                   version_nickname='_undc1_0956_',
+                   csv_entry='yearly_br_underc1_hot_0956.csv',
+                   csv_path='/mnt/AC9AF51E9AF4E5AC/A1ML/phd_datasets/',
+                   figure_path=git_dir+'/jobs/tf_regression_figures/figures_vld/',
+                   model_out_path=git_dir+'/jobs/output_models/',
+                   model_out_name='tf_reg_R1')
+
+    vldar0 = Validation(yaml_version='R1',
+                        yaml_path=git_dir+'/jobs/output_models/',
+                        yaml_file='tf_reg_R1',
+                        path_csv='/mnt/AC9AF51E9AF4E5AC/A1ML/phd_datasets/',
+                        file_csv='teste_validation_195_SCR.csv',
+                        path_fig=git_dir+'/jobs/tf_regression_figures/figures_vld/',
+                        version_tag='',
+                        figure_title='')
+    ar0.autoExec()
+
+    # rede_pp = Preprocess(
+    #     IN_CSV_LIST,
+    #     OUT_CSV_LIST,
+    #     RAIN_CSV,
+    #     NORAIN_CSV,
+    #     LAT_LIMIT,
+    #     LON_LIMIT,
+    #     THRESHOLD_RAIN,
+    #     COLUMN_TYPES)
+    #
+    # rede_pt = PreTraining(IN_CSV_LIST,
+    #                       OUT_CSV_LIST,
+    #                       RAIN_CSV,
+    #                       NORAIN_CSV,
+    #                       COLUMN_TYPES)
 
     # Print the network initial settings
     # minharede.print_settings()
@@ -162,16 +187,25 @@ def main() -> object:
     # regioes = ['R1', 'R2', 'R3', 'R4', 'R5']
     # for r in regioes:
     #     frames = []
+<<<<<<< HEAD
     # path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/yearly/'
     # #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/' + r + '/'
     # pathout = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/TAG/yearly/'
+=======
+    #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/yearly/'
+    #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/' + r + '/'
+    #pathout = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/TAG/yearly/'
+>>>>>>> 70498da886f140c53060959a27fefd44089e0679
     # for file in os.listdir(path):
     #     df = rede_pp.LoadCSV(path, file)
     #     df_final = rede_pp.TagRainNoRain(df)
     #     df_name = os.path.splitext(file)[0] + "_TAG.csv"
     #     df_final.to_csv(os.path.join(pathout, df_name), index=False, sep=",", decimal='.')
     #     print("The file ", df_name, " was saved!")
+<<<<<<< HEAD
 
+=======
+>>>>>>> 70498da886f140c53060959a27fefd44089e0679
     # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     main()
