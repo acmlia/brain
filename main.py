@@ -4,6 +4,7 @@ import logging
 import settings
 import os, sys
 import pandas as pd
+import numpy as np
 
 from src.graphics_builder import GraphicsBuilder
 from src.preprocess import Preprocess
@@ -112,39 +113,65 @@ def main() -> object:
     #                             output_file_name=os.path.join(OUT_CSV_LIST, filename))
      # ------------------------------------------------------------------------------
     # Plotting Box Plot by month and region:
-#    region = ['R1', 'R2', 'R3', 'R4', 'R5']
-#    for r in region:
-#    path = rede_pt.IN_CSV_LIST+'yearly/'
-#    for file in os.listdir(path):
-#        if os.path.isfile(path+file):
-#            print('elemento da pasta: {}'.format(file))
-#            df = rede_pp.LoadCSV(path, file)
-#            df_rain, df_norain, size_norain, size_rain = rede_pp.ThresholdRainNoRain(df)
-#            #month = file[9:16]
-#            region = file[12:14]
-#            filename = 'boxplot_yearly_'+region+'.hmtl'
-#            #filename = 'boxplot_'+month+'_'+region+'.hmtl'
-#            gb = GraphicsBuilder()
-#            gb.box_plotter(df_rain=df_rain, df_norain=df_norain, yvalue1=df_norain['PCT89'], ytitle1='Pixels - no rain',
-#                           yvalue2=df_rain['PCT89'], ytitle2='Pixels - rain', size_norain=size_norain, size_rain=size_rain,
-#                           chart_title='Box Plot PCT89 - Yearly - '+region,
-#                           output_file_name=os.path.join(OUT_CSV_LIST+'yearly', filename))
-     # ------------------------------------------------------------------------------
+    # classe = ['C1', 'C2', 'C3', 'C4']
+    # for c in classe:
+    #     path = rede_pp.IN_CSV_LIST
+    #     for file in os.listdir(path):
+    #         if os.path.isfile(path+file):
+    #             print('elemento da pasta: {}'.format(file))
+    #             df = rede_pp.LoadCSV(path, file)
+    #             idx_pxl_classe, size_pxl_classe = rede_pp.SelectionByClasse(df, c)
+    #             #df_rain, df_norain, size_norain, size_rain = rede_pp.ThresholdRainNoRain(df)
+    #             #month = file[9:16]
+    #             region = file[12:14]
+    #             filename = 'boxplot_yearly_'+region+c+'.hmtl'
+    #             #filename = 'boxplot_'+month+'_'+region+'.hmtl'
+    #             gb = GraphicsBuilder()
+    #             gb.boxplot_per_classe(df_rain=df_rain, df_norain=df_norain, yvalue1=df_norain['89V'], ytitle1='Pixels - no rain',
+    #                           yvalue2=df_rain['89V'], ytitle2='Pixels - rain', size_norain=size_norain, size_rain=size_rain,
+    #                           classe=c, chart_title='Box Plot 89V - Yearly - '+region+c,
+    #                           output_file_name=os.path.join(path, filename))
+#   # ------------------------------------------------------------------------------
+    # Plotting Box Plot by month and region:
+    path = rede_pp.IN_CSV_LIST
+    for file in os.listdir(path):
+        if os.path.isfile(path+file):
+            print('elemento da pasta: {}'.format(file))
+            df = rede_pp.LoadCSV(path, file)
+            classe = ['C1', 'C2', 'C3', 'C4']
+            idx1= np.where((df['CLASSE'] == classe[0]))
+            idx2= np.where((df['CLASSE'] == classe[1]))
+            idx3= np.where((df['CLASSE'] == classe[2]))
+            idx4= np.where((df['CLASSE'] == classe[3]))
+            size_idx1 = str(len(idx1[0]))
+            size_idx2 = str(len(idx2[0]))
+            size_idx3 = str(len(idx3[0]))
+            size_idx4 = str(len(idx4[0]))
+            region = file[12:14]
+            filename = 'boxplot_yearly_PCT89_'+region+'_by_classes.html'
+            #filename = 'boxplot_'+month+'_'+region+'.hmtl'
+            gb = GraphicsBuilder()
+            gb.boxplot_per_classe(dataframe=df, yvalue1=df['PCT89'].iloc[idx1], yvalue2=df['PCT89'].iloc[idx2],
+                                  yvalue3=df['PCT89'].iloc[idx3], yvalue4=df['PCT89'].iloc[idx4],
+                                  ytitle1='Pixels - C1', ytitle2='Pixels - C2', ytitle3='Pixels - C3',
+                                  ytitle4='Pixels - C4', size_idx1=size_idx1, size_idx2=size_idx2,
+                                  size_idx3=size_idx3, size_idx4=size_idx4,
+                                  chart_title='Box Plot PCT89 - Yearly - '+region+ ' by classes',
+                                  output_file_name=os.path.join(OUT_CSV_LIST, filename))
+  # ------------------------------------------------------------------------------    #
     # regioes = ['R1', 'R2', 'R3', 'R4', 'R5']
     # for r in regioes:
     #     frames = []
-    path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/yearly/'
-    #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/' + r + '/'
-    pathout = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/TAG/yearly/'
-    for file in os.listdir(path):
-        df = rede_pp.LoadCSV(path, file)
-        df_final = rede_pp.TagRainNoRain(df)
-        df_name = os.path.splitext(file)[0] + "_TAG.csv"
-        df_final.to_csv(os.path.join(pathout, df_name), index=False, sep=",", decimal='.')
-        print("The file ", df_name, " was saved!")
+    # path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/yearly/'
+    # #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/' + r + '/'
+    # pathout = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/TAG/yearly/'
+    # for file in os.listdir(path):
+    #     df = rede_pp.LoadCSV(path, file)
+    #     df_final = rede_pp.TagRainNoRain(df)
+    #     df_name = os.path.splitext(file)[0] + "_TAG.csv"
+    #     df_final.to_csv(os.path.join(pathout, df_name), index=False, sep=",", decimal='.')
+    #     print("The file ", df_name, " was saved!")
 
     # ------------------------------------------------------------------------------
-
-
 if __name__ == '__main__':
     main()
