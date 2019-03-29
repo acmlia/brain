@@ -45,7 +45,7 @@ def main() -> object:
 #                   model_out_name='tf_reg_R9')
 
     Screening = Training(random_seed=7,
-                   csv_entry='yearly_br_underc1_hot_0956.csv',
+                   csv_entry='yearly_br_underc1_0956.csv',
                    csv_path='/home/david/DATA/',
                    model_out_path='/home/david/DATA/',
                    model_out_name='screening_SCR1_')
