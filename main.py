@@ -46,7 +46,7 @@ def main() -> object:
 
     Screening = Training(random_seed=7,
                    csv_entry='yearly_br_underc1_0956.csv',
-                   csv_path='/home/david/DATA/',
+                   csv_path='/home/david/CSV/',
                    model_out_path='/home/david/DATA/',
                    model_out_name='screening_SCR1_')
 
