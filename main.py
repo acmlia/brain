@@ -48,7 +48,7 @@ def main() -> object:
                    csv_entry='yearly_br_underc1_hot_0956.csv',
                    csv_path='/home/david/DATA/',
                    model_out_path='/home/david/DATA/',
-                   model_out_name='/home/david/DATA/')
+                   model_out_name='screening_SCR1_')
 
 #------------------------------------------------------------------------------
 # VALIDATION CONFIGURATIONS:
