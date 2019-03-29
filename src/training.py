@@ -151,11 +151,8 @@ class Training:
                                                             random_state=101)
 
         # Create the instance for KerasRegressor:
-        model = KerasClassifier(build_fn=self.build_class_model, ,
-                                epochs=100, verbose=0)
+        model = KerasClassifier(build_fn=self.build_class_model)
         tic()
-        screening_trained = model.fit(x_train,y_train)
-
 #------------------------------------------------------------------------------
         # Display training progress by printing a single dot for each completed epoch
 
@@ -178,8 +175,6 @@ class Training:
         hist = pd.DataFrame(history.history)
         hist['epoch'] = history.epoch
         hist.tail()
-
-        self.plot_history(history)
 # ------------------------------------------------------------------------------
         # Saving model to YAML:
 
