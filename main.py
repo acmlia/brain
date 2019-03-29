@@ -47,8 +47,8 @@ def main() -> object:
     Screening = Training(random_seed=7,
                    csv_entry='yearly_br_underc1_hot_0956.csv',
                    csv_path='/home/david/DATA/',
-                   model_out_path=git_dir+'/redes_finais/screening/',
-                   model_out_name='screening_final')
+                   model_out_path='/home/david/DATA/',
+                   model_out_name='/home/david/DATA/')
 
 #------------------------------------------------------------------------------
 # VALIDATION CONFIGURATIONS:
