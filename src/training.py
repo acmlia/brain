@@ -151,22 +151,46 @@ class Training:
                                                             random_state=101)
 
         # Create the instance for KerasRegressor:
-        model = KerasClassifier(build_fn=self.build_class_model, batch_size=10,
+        model = KerasClassifier(build_fn=self.build_class_model, ,
                                 epochs=100, verbose=0)
         tic()
         screening_trained = model.fit(x_train,y_train)
-        tac()
 
+#------------------------------------------------------------------------------
+        # Display training progress by printing a single dot for each completed epoch
+
+        class PrintDot(keras.callbacks.Callback):
+            def on_epoch_end(self, epoch, logs):
+                if epoch % 100 == 0: print('')
+                print('.', end='')
+
+        EPOCHS = 1000
+
+        history = model.fit(x_train, y_train,
+                            epochs=EPOCHS, validation_split=0.2, batch_size=10,
+                            verbose=0, callbacks=[PrintDot()])
+        print(history.history.keys())
+
+# ------------------------------------------------------------------------------
+        # Visualize the model's training progress using the stats
+        # stored in the history object.
+
+        hist = pd.DataFrame(history.history)
+        hist['epoch'] = history.epoch
+        hist.tail()
+
+        self.plot_history(history)
 # ------------------------------------------------------------------------------
         # Saving model to YAML:
 
-        model_yaml = screening_trained.to_yaml()
+        model_yaml = history.to_yaml()
         with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
             yaml_file.write(model_yaml)
 
         # serialize weights to HDF5
         model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
         print("Saved model to disk")
+        tac()
 
     # ------------------------------------------------------------------------------
     #
