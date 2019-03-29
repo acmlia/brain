@@ -32,27 +32,42 @@ def main() -> object:
     # | Code starts here :) |
     # '---------------------'
 
-    git_dir = '/mnt/AC9AF51E9AF4E5AC/repos'
+    git_dir = '/media/DATA/tmp/git-repositories/'
 
-    ar0 = Training(random_seed=7,
-                   run_prefix='tf_regr_',
-                   version='R1',
-                   version_nickname='_undc1_0956_',
+#    Retrieval = Training(random_seed=7,
+#                   run_prefix='tf_regr_',
+#                   version='R9',
+#                   version_nickname='_underc1_hot_0956_',
+#                   csv_entry='yearly_br_underc1_hot_0956.csv',
+#                   csv_path='/home/david//DATA/tmp/datasets/brazil/brazil_qgis/csv/',
+#                   figure_path=git_dir+'/redes_finais/figures/',
+#                   model_out_path=git_dir+'/redes_finais/output_models/',
+#                   model_out_name='tf_reg_R9')
+
+    Screening = Training(random_seed=7,
                    csv_entry='yearly_br_underc1_hot_0956.csv',
-                   csv_path='/mnt/AC9AF51E9AF4E5AC/A1ML/phd_datasets/',
-                   figure_path=git_dir+'/jobs/tf_regression_figures/figures_vld/',
-                   model_out_path=git_dir+'/jobs/output_models/',
-                   model_out_name='tf_reg_R1')
+                   csv_path='/home/david/DATA/',
+                   model_out_path=git_dir+'/redes_finais/screening/',
+                   model_out_name='screening_final')
 
-    vldar0 = Validation(yaml_version='R1',
-                        yaml_path=git_dir+'/jobs/output_models/',
-                        yaml_file='tf_reg_R1',
-                        path_csv='/mnt/AC9AF51E9AF4E5AC/A1ML/phd_datasets/',
-                        file_csv='teste_validation_195_SCR.csv',
-                        path_fig=git_dir+'/jobs/tf_regression_figures/figures_vld/',
-                        version_tag='',
-                        figure_title='')
-    ar0.autoExec()
+#------------------------------------------------------------------------------
+# VALIDATION CONFIGURATIONS:
+#------------------------------------------------------------------------------
+#    hdf5 = Validation(path_hdf5='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/')
+
+#    vldar0 = Validation(yaml_version='R9',
+#                        yaml_path=git_dir+'redes_finais/output_models/',
+#                        path_csv='/media/DATA/tmp/git-repositories/redes_finais/validation/csv/',
+#                        file_csv='teste_manual_195_SCR.csv',
+#                        path_fig=git_dir+'redes_finais/validation/figures_vld/')
+#------------------------------------------------------------------------------
+# CALL THE PROGRAMS:
+#------------------------------------------------------------------------------
+    Screening.autoExecClass()
+#    vldar0.autoVld()
+#    hdf5.read_hdf5_1CGMI()
+#    hdf5.read_hdf5_2AGPROF()
+#    hdf5.read_hdf5_2BCMB()
 
     # rede_pp = Preprocess(
     #     IN_CSV_LIST,
@@ -158,54 +173,51 @@ def main() -> object:
     #                           output_file_name=os.path.join(path, filename))
 #   # ------------------------------------------------------------------------------
     # Plotting Box Plot by month and region:
-    path = rede_pp.IN_CSV_LIST
-    for file in os.listdir(path):
-        if os.path.isfile(path+file):
-            print('elemento da pasta: {}'.format(file))
-            df = rede_pp.LoadCSV(path, file)
-            classe = ['C1', 'C2', 'C3', 'C4']
-            idx1= np.where((df['CLASSE'] == classe[0]))
-            idx2= np.where((df['CLASSE'] == classe[1]))
-            idx3= np.where((df['CLASSE'] == classe[2]))
-            idx4= np.where((df['CLASSE'] == classe[3]))
-            size_idx1 = str(len(idx1[0]))
-            size_idx2 = str(len(idx2[0]))
-            size_idx3 = str(len(idx3[0]))
-            size_idx4 = str(len(idx4[0]))
-            region = file[12:14]
-            filename = 'boxplot_yearly_PCT89_'+region+'_by_classes.html'
-            #filename = 'boxplot_'+month+'_'+region+'.hmtl'
-            gb = GraphicsBuilder()
-            gb.boxplot_per_classe(dataframe=df, yvalue1=df['PCT89'].iloc[idx1], yvalue2=df['PCT89'].iloc[idx2],
-                                  yvalue3=df['PCT89'].iloc[idx3], yvalue4=df['PCT89'].iloc[idx4],
-                                  ytitle1='Pixels - C1', ytitle2='Pixels - C2', ytitle3='Pixels - C3',
-                                  ytitle4='Pixels - C4', size_idx1=size_idx1, size_idx2=size_idx2,
-                                  size_idx3=size_idx3, size_idx4=size_idx4,
-                                  chart_title='Box Plot PCT89 - Yearly - '+region+ ' by classes',
-                                  output_file_name=os.path.join(OUT_CSV_LIST, filename))
+#    path = rede_pp.IN_CSV_LIST
+#    for file in os.listdir(path):
+#        if os.path.isfile(path+file):
+#            print('elemento da pasta: {}'.format(file))
+#            df = rede_pp.LoadCSV(path, file)
+#            classe = ['C1', 'C2', 'C3', 'C4']
+#            idx1= np.where((df['CLASSE'] == classe[0]))
+#            idx2= np.where((df['CLASSE'] == classe[1]))
+#            idx3= np.where((df['CLASSE'] == classe[2]))
+#            idx4= np.where((df['CLASSE'] == classe[3]))
+#            size_idx1 = str(len(idx1[0]))
+#            size_idx2 = str(len(idx2[0]))
+#            size_idx3 = str(len(idx3[0]))
+#            size_idx4 = str(len(idx4[0]))
+#            region = file[12:14]
+#            filename = 'boxplot_yearly_PCT89_'+region+'_by_classes.html'
+#            #filename = 'boxplot_'+month+'_'+region+'.hmtl'
+#            gb = GraphicsBuilder()
+#            gb.boxplot_per_classe(dataframe=df, yvalue1=df['PCT89'].iloc[idx1], yvalue2=df['PCT89'].iloc[idx2],
+#                                  yvalue3=df['PCT89'].iloc[idx3], yvalue4=df['PCT89'].iloc[idx4],
+#                                  ytitle1='Pixels - C1', ytitle2='Pixels - C2', ytitle3='Pixels - C3',
+#                                  ytitle4='Pixels - C4', size_idx1=size_idx1, size_idx2=size_idx2,
+#                                  size_idx3=size_idx3, size_idx4=size_idx4,
+#                                  chart_title='Box Plot PCT89 - Yearly - '+region+ ' by classes',
+#                                  output_file_name=os.path.join(OUT_CSV_LIST, filename))
   # ------------------------------------------------------------------------------    #
     # regioes = ['R1', 'R2', 'R3', 'R4', 'R5']
     # for r in regioes:
     #     frames = []
-<<<<<<< HEAD
+
     # path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/yearly/'
     # #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/' + r + '/'
     # pathout = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/TAG/yearly/'
-=======
+
     #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/yearly/'
     #path = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/' + r + '/'
     #pathout = '/media/DATA/tmp/datasets/regionais/meteo_regions/csv_regions/TAG/yearly/'
->>>>>>> 70498da886f140c53060959a27fefd44089e0679
+
     # for file in os.listdir(path):
     #     df = rede_pp.LoadCSV(path, file)
     #     df_final = rede_pp.TagRainNoRain(df)
     #     df_name = os.path.splitext(file)[0] + "_TAG.csv"
     #     df_final.to_csv(os.path.join(pathout, df_name), index=False, sep=",", decimal='.')
     #     print("The file ", df_name, " was saved!")
-<<<<<<< HEAD
 
-=======
->>>>>>> 70498da886f140c53060959a27fefd44089e0679
     # ------------------------------------------------------------------------------
 if __name__ == '__main__':
     main()

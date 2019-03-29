@@ -8,6 +8,8 @@ import seaborn as sns
 from collections import Counter
 import matplotlib.pyplot as plt
 from sklearn.externals import joblib
+from sklearn.preprocessing import Normalizer
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import QuantileTransformer
 from sklearn.decomposition import PCA
@@ -19,9 +21,24 @@ from keras.layers import GaussianNoise
 from keras.layers import GaussianDropout
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasClassifier
 from keras.models import model_from_yaml
 
 print('TF version '+tf.__version__)
+
+# ------------------------------------------------------------------------------
+
+def tic():
+    global _start_time
+    _start_time = time.time()
+
+
+def tac():
+    t_sec = round(time.time() - _start_time)
+    (t_min, t_sec) = divmod(t_sec, 60)
+    (t_hour, t_min) = divmod(t_min, 60)
+    print('Time passed: {}hour:{}min:{}sec'.format(t_hour, t_min, t_sec))
+# ------------------------------------------------------------------------------
 
 
 class Training:
@@ -60,10 +77,10 @@ class Training:
         self.fig_title = run_prefix + version + version_nickname
         self.mod_out_pth = model_out_path
         self.mod_out_name = model_out_name
-    # --------------------------
+    # -------------------------------------------------------------------------
     # DROP DATA OUTSIDE INTERVAL
-    # --------------------------
-
+    # -------------------------------------------------------------------------
+       
     @staticmethod
     def keep_interval(keepfrom: 0.0, keepto: 1.0, dataframe, target_col: str):
         keepinterval = np.where((dataframe[target_col] >= keepfrom) &
@@ -71,80 +88,95 @@ class Training:
         result = dataframe.iloc[keepinterval]
         return result
 
+    # -------------------------------------------------------------------------
+    # BUILD MODELS DEFINITIONS : CLAS = CLASSIFICATION and REG = REGRESSION
+    # -------------------------------------------------------------------------
+
     @staticmethod
-    def build_model(input_size):
+    def build_class_model():
+        '''
+         Fucntion to create the instance and configuration of the keras
+         model(Sequential and Dense).
+        '''
+        # Create the Keras model:
+        model = Sequential()
+        model.add(Dense(8, input_dim=4, kernel_initializer='uniform', activation='relu'))
+        model.add(Dense(2, kernel_initializer='uniform', activation='relu'))
+        model.add(Dense(1, kernel_initializer='uniform', activation='sigmoid'))
+        # Compile model
+        model.compile(loss='binary_crossentropy', optimizer='SGD', metrics=['accuracy'],)
+        return model
+
+    @staticmethod
+    def build_reg_model(input_size):
+        '''
+         Fucntion to create the instance and configuration of the keras
+         model(Sequential and Dense).
+        '''
         model = Sequential()
         model.add(GaussianNoise(0.01, input_shape=(input_size,)))
-        model.add(Dense(22, activation='linear'))
-        model.add(Dense(11, activation='linear'))
+        model.add(Dense(24, activation='linear'))
+        model.add(Dense(10, activation='linear'))
         model.add(Dense(1))
         model.compile(loss='mean_squared_error',
                       optimizer='adam',
                       metrics=['mean_absolute_error', 'mean_squared_error'])
         return model
 
-    def plot_history(self, history):
-        hist = pd.DataFrame(history.history)
-        hist['epoch'] = history.epoch
+    # -------------------------------------------------------------------------
+    # EXECUTION OF READING INPUT ATTRIBUTES, SCALING, PCA, SPLIT AND RUN MODEL!
+    # -------------------------------------------------------------------------
 
-        plt.xlabel('Epoch')
-        plt.ylabel('Mean Abs Error [sfcprcp]')
-        plt.plot(hist['epoch'], hist['mean_absolute_error'],
-                 label='Train Error')
-        plt.plot(hist['epoch'], hist['val_mean_absolute_error'],
-                 label='Val Error')
-        ylim_max = hist.val_mean_absolute_error.max() + 10
-        plt.ylim([0, ylim_max])
-        plt.legend()
+    def autoExecClass(self):
 
-        plt.figure()
-        plt.xlabel('Epoch')
-        plt.ylabel('Mean Square Error [$scfprcp^2$]')
-        plt.plot(hist['epoch'], hist['mean_squared_error'],
-                 label='Train Error')
-        plt.plot(hist['epoch'], hist['val_mean_squared_error'],
-                 label='Val Error')
-        ylim_max = hist.val_mean_squared_error.max() + 10
-        plt.ylim([0, ylim_max])
-        plt.legend()
-        # plt.show()
-        fig_name = self.fig_title + "_error_per_epochs_history.png"
-        plt.savefig(self.path_fig + fig_name)
-
-    def plot_history_EarlyStopping(self, history):
-        hist = pd.DataFrame(history.history)
-        hist['epoch'] = history.epoch
-
-        plt.figure()
-        plt.xlabel('Epoch')
-        plt.ylabel('Mean Abs Error [sfcprcp]')
-        plt.plot(hist['epoch'], hist['mean_absolute_error'],
-                 label='Train Error')
-        plt.plot(hist['epoch'], hist['val_mean_absolute_error'],
-                 label='Val Error')
-        ylim_max = hist.val_mean_absolute_error.max() + 10
-        plt.ylim([0, ylim_max])
-
-        plt.legend()
-
-        plt.figure()
-        plt.xlabel('Epoch')
-        plt.ylabel('Mean Square Error [$sfcprcp^2$]')
-        plt.plot(hist['epoch'], hist['mean_squared_error'],
-                 label='Train Error')
-        plt.plot(hist['epoch'], hist['val_mean_squared_error'],
-                 label='Val Error')
-        ylim_max = hist.val_mean_squared_error.max() + 10
-        plt.ylim([0, ylim_max])
-
-        plt.legend()
-
-        fig_name = self.fig_title + "_error_per_epochs_EarlyStopping.png"
-        plt.savefig(self.path_fig + fig_name)
-
-    def autoExec(self):
         # Fix random seed for reproducibility:
         np.random.seed(self.seed)
+
+        # Load dataset:
+        df = pd.read_csv(os.path.join(self.path, self.file), sep=',', decimal='.')
+        x, y= df.loc[:,['36V', '89V', '166V', '190V']], df.loc[:,['TagRain']]
+        
+        x_arr = np.asanyarray(x)
+        y_arr = np.asanyarray(y)
+        y_arr = np.ravel(y_arr)
+
+        # Scaling the input paramaters:
+#       scaler_min_max = MinMaxScaler()
+        norm_sc = Normalizer()
+        x_normalized= norm_sc.fit_transform(x_arr)
+
+        # Split the dataset in test and train samples:
+        x_train, x_test, y_train, y_test = train_test_split(x_normalized,
+                                                            y_arr, test_size=0.10,
+                                                            random_state=101)
+
+        # Create the instance for KerasRegressor:
+        model = KerasClassifier(build_fn=self.build_class_model, batch_size=10,
+                                epochs=100, verbose=0)
+        tic()
+        screening_trained = model.fit(x_train,y_train)
+        tac()
+
+# ------------------------------------------------------------------------------
+        # Saving model to YAML:
+
+        model_yaml = screening_trained.to_yaml()
+        with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
+            yaml_file.write(model_yaml)
+
+        # serialize weights to HDF5
+        model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
+        print("Saved model to disk")
+
+    # ------------------------------------------------------------------------------
+    #
+    # ------------------------------------------------------------------------------
+
+    def autoExecReg(self):
+
+        # Fix random seed for reproducibility:
+        np.random.seed(self.seed)
+# ------------------------------------------------------------------------------
 
         df_orig = pd.read_csv(os.path.join(self.path, self.file), sep=',', decimal='.')
 
@@ -164,7 +196,6 @@ class Training:
         ancillary = df_normed_input.loc[:, ['183VH', 'sfccode', 'T2m', 'tcwv', 'PCT36', 'PCT89', '89VH',
                                             'lat']]
         # regions=df_orig.loc[:,['R1','R2','R3','R4','R5']]
-        # ------------------------------------------------------------------------------
         # ------------------------------------------------------------------------------
         # Choosing the number of components:
 
@@ -260,7 +291,7 @@ class Training:
         # ------------------------------------------------------------------------------
         # Build the model:
 
-        model = self.build_model(len(train_dataset.keys()))
+        model = self.build_reg_model(len(train_dataset.keys()))
         # ------------------------------------------------------------------------------
         # Inspect the model:
         # Use the .summary method to print a simple description of the model
@@ -302,7 +333,7 @@ class Training:
         self.plot_history(history)
         # ------------------------------------------------------------------------------
 
-        model = self.build_model(len(train_dataset.keys()))
+        model = self.build_reg_model(len(train_dataset.keys()))
 
         # The patience parameter is the amount of epochs to check for improvement
         early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
@@ -346,6 +377,18 @@ class Training:
         plt.savefig(self.path_fig + fig_name)
         plt.clf()
 
+        #------------------------------------------------------------------------------
+        ax = plt.gca()
+        ax.plot(y_test,test_predictions, 'o', c='blue', alpha=0.07, markeredgecolor='none')
+        ax.set_yscale('log')
+        ax.set_xscale('log')
+        ax.set_xlabel('True Values [sfcprcp]')
+        ax.set_ylabel('Predictions [sfcprcp]')
+        plt.plot([-100, 100], [-100, 100])
+        fig_name = self.fig_title + "_plot_scatter_LOG_y_test_vs_y_pred.png"
+        plt.savefig(self.path_fig+fig_name)
+        plt.clf()
+#------------------------------------------------------------------------------
         # ------------------------------------------------------------------------------
         # It looks like our model predicts reasonably well.
         # Let's take a look at the error distribution.
@@ -368,7 +411,65 @@ class Training:
         # serialize weights to HDF5
         model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
         print("Saved model to disk")
-<<<<<<< HEAD
-=======
 
->>>>>>> 70498da886f140c53060959a27fefd44089e0679
+    # -------------------------------------------------------------------------
+    # FUNCTIONS TO MAKE PLOTS ABOUT TRAINING:
+    # -------------------------------------------------------------------------
+    def plot_history(self, history):
+        hist = pd.DataFrame(history.history)
+        hist['epoch'] = history.epoch
+
+        plt.xlabel('Epoch')
+        plt.ylabel('Mean Abs Error [sfcprcp]')
+        plt.plot(hist['epoch'], hist['mean_absolute_error'],
+                 label='Train Error')
+        plt.plot(hist['epoch'], hist['val_mean_absolute_error'],
+                 label='Val Error')
+        ylim_max = hist.val_mean_absolute_error.max() + 10
+        plt.ylim([0, ylim_max])
+        plt.legend()
+
+        plt.figure()
+        plt.xlabel('Epoch')
+        plt.ylabel('Mean Square Error [$scfprcp^2$]')
+        plt.plot(hist['epoch'], hist['mean_squared_error'],
+                 label='Train Error')
+        plt.plot(hist['epoch'], hist['val_mean_squared_error'],
+                 label='Val Error')
+        ylim_max = hist.val_mean_squared_error.max() + 10
+        plt.ylim([0, ylim_max])
+        plt.legend()
+        # plt.show()
+        fig_name = self.fig_title + "_error_per_epochs_history.png"
+        plt.savefig(self.path_fig + fig_name)
+
+    def plot_history_EarlyStopping(self, history):
+        hist = pd.DataFrame(history.history)
+        hist['epoch'] = history.epoch
+
+        plt.figure()
+        plt.xlabel('Epoch')
+        plt.ylabel('Mean Abs Error [sfcprcp]')
+        plt.plot(hist['epoch'], hist['mean_absolute_error'],
+                 label='Train Error')
+        plt.plot(hist['epoch'], hist['val_mean_absolute_error'],
+                 label='Val Error')
+        ylim_max = hist.val_mean_absolute_error.max() + 10
+        plt.ylim([0, ylim_max])
+
+        plt.legend()
+
+        plt.figure()
+        plt.xlabel('Epoch')
+        plt.ylabel('Mean Square Error [$sfcprcp^2$]')
+        plt.plot(hist['epoch'], hist['mean_squared_error'],
+                 label='Train Error')
+        plt.plot(hist['epoch'], hist['val_mean_squared_error'],
+                 label='Val Error')
+        ylim_max = hist.val_mean_squared_error.max() + 10
+        plt.ylim([0, ylim_max])
+
+        plt.legend()
+
+        fig_name = self.fig_title + "_error_per_epochs_EarlyStopping.png"
+        plt.savefig(self.path_fig + fig_name)
