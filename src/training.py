@@ -178,7 +178,7 @@ class Training:
 # ------------------------------------------------------------------------------
         # Saving model to YAML:
 
-        model_yaml = history.to_yaml()
+        model_yaml = model.to_yaml()
         with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
             yaml_file.write(model_yaml)
 
