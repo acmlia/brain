@@ -32,38 +32,39 @@ def main() -> object:
     # | Code starts here :) |
     # '---------------------'
 
-    git_dir = '/media/DATA/tmp/git-repositories/'
+    git_dir = '/home/david/git-repos/'
 
-#    Retrieval = Training(random_seed=7,
-#                   run_prefix='tf_regr_',
-#                   version='R9',
-#                   version_nickname='_underc1_hot_0956_',
-#                   csv_entry='yearly_br_underc1_hot_0956.csv',
-#                   csv_path='/home/david//DATA/tmp/datasets/brazil/brazil_qgis/csv/',
-#                   figure_path=git_dir+'/redes_finais/figures/',
-#                   model_out_path=git_dir+'/redes_finais/output_models/',
-#                   model_out_name='tf_reg_R9')
-
-    Screening = Training(random_seed=7,
+    Retrieval = Training(random_seed=7,
+                   run_prefix='final_regr_',
+                   version='R1',
+                   version_nickname='_underc1_0956_',
                    csv_entry='yearly_br_underc1_0956.csv',
-                   csv_path='/home/david/CSV/',
-                   model_out_path='/home/david/DATA/',
-                   model_out_name='screening_SCR1_')
+                   csv_path='/home/david/DATA/',
+                   figure_path=git_dir+'brain/',
+                   model_out_path=git_dir+'brain/',
+                   model_out_name='final_reg_R1')
+
+#    Screening = Training(random_seed=7,
+#                   csv_entry='yearly_br_underc1_0956.csv',
+#                   csv_path='/home/david/CSV/',
+#                   model_out_path='/home/david/DATA/',
+#                   model_out_name='screening_SCR1_')
 
 #------------------------------------------------------------------------------
 # VALIDATION CONFIGURATIONS:
 #------------------------------------------------------------------------------
 #    hdf5 = Validation(path_hdf5='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/')
 
-#    vldar0 = Validation(yaml_version='R9',
-#                        yaml_path=git_dir+'redes_finais/output_models/',
-#                        path_csv='/media/DATA/tmp/git-repositories/redes_finais/validation/csv/',
+#    vldar0 = Validation(yaml_version='R1',
+#                        yaml_path=git_dir+'redes_finais/retrieval/output_models/',
+#                        path_csv='/media/DATA/tmp/git-repositories/redes_finais/retrieval/validation/csv/',
 #                        file_csv='teste_manual_195_SCR.csv',
-#                        path_fig=git_dir+'redes_finais/validation/figures_vld/')
+#                        path_fig=git_dir+'redes_finais/retrieval/validation/figures_vld/')
 #------------------------------------------------------------------------------
 # CALL THE PROGRAMS:
 #------------------------------------------------------------------------------
-    Screening.autoExecClass()
+    Retrieval.autoExecReg()
+#    Screening.autoExecClass()
 #    vldar0.autoVld()
 #    hdf5.read_hdf5_1CGMI()
 #    hdf5.read_hdf5_2AGPROF()
