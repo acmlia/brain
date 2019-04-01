@@ -1,0 +1,8 @@
+Running on host node009
+Time is Sun Mar 31 22:46:11 -03 2019
+Directory is /home/david/git-repos/brain
+Slurm job ID is 40269
+This job runs on the following machines:
+node009
+Running /home/david/venv366tfcpu/bin/python /home/david/git-repos/brain/main4.py
+slurmstepd: error: *** JOB 40269 ON node009 CANCELLED AT 2019-03-31T22:46:38 ***

@@ -36,13 +36,13 @@ def main() -> object:
 
     Retrieval = Training(random_seed=7,
                    run_prefix='final_regr_',
-                   version='R1',
-                   version_nickname='_underc1_0956_',
-                   csv_entry='yearly_br_underc1_0956.csv',
+                   version='R3',
+                   version_nickname='_underc1_hot_0956_',
+                   csv_entry='yearly_br_underc1_hot_0956.csv',
                    csv_path='/home/david/DATA/',
                    figure_path=git_dir+'brain/',
                    model_out_path=git_dir+'brain/',
-                   model_out_name='final_reg_R1')
+                   model_out_name='final_reg_R3')
 
 #    Screening = Training(random_seed=7,
 #                   csv_entry='yearly_br_underc1_0956.csv',

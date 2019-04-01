@@ -16,6 +16,7 @@ from sklearn.decomposition import PCA
 
 import tensorflow as tf
 from tensorflow import keras
+from keras import backend
 from tensorflow.keras import layers
 from keras.layers import GaussianNoise
 from keras.layers import GaussianDropout
@@ -38,6 +39,9 @@ def tac():
     (t_min, t_sec) = divmod(t_sec, 60)
     (t_hour, t_min) = divmod(t_min, 60)
     print('Time passed: {}hour:{}min:{}sec'.format(t_hour, t_min, t_sec))
+
+def mean_squared_error(y_true, y_pred):
+    return K.mean(K.square(y_pred - y_true), axis=-1)
 # ------------------------------------------------------------------------------
 
 
@@ -115,8 +119,8 @@ class Training:
         '''
         model = Sequential()
         model.add(GaussianNoise(0.01, input_shape=(input_size,)))
-        model.add(Dense(24, activation='linear'))
-        model.add(Dense(10, activation='linear'))
+        model.add(Dense(33, activation='linear'))
+        model.add(Dense(11, activation='linear'))
         model.add(Dense(1))
         model.compile(loss='mean_squared_error',
                       optimizer='adam',
@@ -261,16 +265,16 @@ class Training:
         dataset = dataset.join(df_orig.loc[:, ['sfcprcp']], how='right')
         # ------------------------------------------------------------------------------
 
-        dataset = self.keep_interval(0.5, 100.0, dataset, 'sfcprcp')
+        dataset = self.keep_interval(0.5, 75.0, dataset, 'sfcprcp')
 
         # ----------------------------------------
         # SUBSET BY SPECIFIC CLASS (UNDERSAMPLING)
-        n = 0.90
-        to_remove = np.random.choice(
-            dataset.index,
-            size=int(dataset.shape[0] * n),
-            replace=False)
-        dataset = dataset.drop(to_remove)
+#        n = 0.90
+#        to_remove = np.random.choice(
+#            dataset.index,
+#            size=int(dataset.shape[0] * n),
+#            replace=False)
+#        dataset = dataset.drop(to_remove)
 
         # ------------------------------------------------------------------------------
         # Split the data into train and test
