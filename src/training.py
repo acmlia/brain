@@ -265,7 +265,7 @@ class Training:
         dataset = dataset.join(df_orig.loc[:, ['sfcprcp']], how='right')
         # ------------------------------------------------------------------------------
 
-        dataset = self.keep_interval(0.5, 100.0, dataset, 'sfcprcp')
+        dataset = self.keep_interval(0.5, 75.0, dataset, 'sfcprcp')
 
         # ----------------------------------------
         # SUBSET BY SPECIFIC CLASS (UNDERSAMPLING)
