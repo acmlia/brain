@@ -7,7 +7,7 @@ Created on Sun Mar 10 19:48:36 2019
 """
 
 
-class MeteorologicalDiagnosis:
+class CategoricalMetrics:
 
     @staticmethod
     def get_TPTN(obs, pred):
@@ -116,11 +116,11 @@ class MeteorologicalDiagnosis:
 
 
 # ---------------------------------------------
-obs =   [0, 1, 1, 0, 0, 0, 1, 1, 0]
-pred =  [0, 1, 0, 0, 1, 0, 1, 1, 0]
-
-mozao_tools = MeteorologicalDiagnosis()
-print('metrics: ', mozao_tools.metrics(obs, pred))
+#obs =   [0, 1, 1, 0, 0, 0, 1, 1, 0]
+#pred =  [0, 1, 0, 0, 1, 0, 1, 1, 0]
+#
+#mozao_tools = CategoricalMetrics()
+#print('metrics: ', mozao_tools.metrics(obs, pred))
 # print('\nOBS  = ', obs,
 #       '\nPRED = ', pred,
 #       '\nTPTN = ', mozao_tools.get_TPTN(obs, pred),

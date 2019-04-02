@@ -42,6 +42,8 @@ class Validation:
                  yaml_path='',
                  path_csv='',
                  file_csv='',
+                 df_1C ='',
+                 df_2AGPROF='',
                  path_fig='',
                  path_hdf5=''):
 
@@ -49,6 +51,8 @@ class Validation:
         self.ymlp = yaml_path
         self.path_csv = path_csv
         self.file_csv = file_csv
+        self.df_1C = df_1C
+        self.df_2AGPROF = df_2AGPROF
         self.path_fig = path_fig
         self.vrn = yaml_version
         self.path_hdf5 = path_hdf5
@@ -471,3 +475,18 @@ class Validation:
             df.to_csv((csvdir + file_name), index=False, sep=",", decimal='.')
             print("Dataframe saved!")
 
+
+    def Merge_1CGMI_2AGPROF(self):
+
+        df1 = pd.read_csv(os.path.join(self.path_csv, self.df_1C), sep=',', decimal='.')
+        df2 = pd.read_csv(os.path.join(self.path_csv, self.df_2AGPROF), sep=',', decimal='.')
+
+        lat_df2 = df2.pop('lat')
+        lon_df2 = df2.pop('lon')
+        df_final = pd.DataFrame()
+        df_final=df1.join(df2, how='right')
+        filename=self.df_1C[22:58]
+        filename = 'validation_dataframe_'+filename+'.csv'
+        df_final.to_csv((self.path_csv + filename), index=False, sep=",", decimal='.')
+        print("Dataframe created!")
+        return df_final

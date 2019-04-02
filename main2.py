@@ -32,17 +32,28 @@ def main() -> object:
     # | Code starts here :) |
     # '---------------------'
 
-    git_dir = '/home/david/git-repos/'
+#    git_dir = '/home/david/git-repos/'
+    git_dir='/media/DATA/tmp/git-repositories/'
+
+#    Retrieval = Training(random_seed=7,
+#                   run_prefix='final_regr_',
+#                   version='R2',
+#                   version_nickname='_OK_TAG_',
+#                   csv_entry='yearly_clip_br_var2d_OK_TAG.csv',
+#                   csv_path='/home/david/DATA/',
+#                   figure_path=git_dir+'brain/',
+#                   model_out_path=git_dir+'brain/',
+#                   model_out_name='final_reg_R2')
 
     Retrieval = Training(random_seed=7,
                    run_prefix='final_regr_',
-                   version='R2',
-                   version_nickname='_OK_TAG_',
-                   csv_entry='yearly_clip_br_var2d_OK_TAG.csv',
-                   csv_path='/home/david/DATA/',
-                   figure_path=git_dir+'brain/',
-                   model_out_path=git_dir+'brain/',
-                   model_out_name='final_reg_R2')
+                   version='TESTE',
+                   version_nickname='_underc1_hot_0956_',
+                   csv_entry='yearly_br_underc1_hot_0956.csv',
+                   csv_path='/media/DATA/tmp/datasets/brazil/brazil_qgis/csv',
+                   figure_path=git_dir+'redes_finais/retrieval/figures/',
+                   model_out_path=git_dir+'redes_finais/retrieval/output_models/',
+                   model_out_name='TESTE')
 
 #    Screening = Training(random_seed=7,
 #                   csv_entry='yearly_br_underc1_0956.csv',

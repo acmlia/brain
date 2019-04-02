@@ -11,6 +11,8 @@ from src.validation import Validation
 from src.graphics_builder import GraphicsBuilder
 from src.preprocess import Preprocess
 from src.pretraining import PreTraining
+from src.prediction import Prediction
+#import src.meteoro_skills
 
 
 def main() -> object:
@@ -19,66 +21,82 @@ def main() -> object:
     """
     logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S', level=logging.DEBUG)
 
-    # IN_CSV_LIST = settings.IN_CSV_LIST
-    # OUT_CSV_LIST = settings.OUT_CSV_LIST
-    # RAIN_CSV = settings.RAIN_CSV
-    # NORAIN_CSV = settings.NORAIN_CSV
-    # LAT_LIMIT = settings.LAT_LIMIT
-    # LON_LIMIT = settings.LON_LIMIT
-    # THRESHOLD_RAIN = settings.THRESHOLD_RAIN
-    # COLUMN_TYPES = settings.COLUMN_TYPES
+#    IN_CSV_LIST = settings.IN_CSV_LIST
+#    OUT_CSV_LIST = settings.OUT_CSV_LIST
+#    RAIN_CSV = settings.RAIN_CSV
+#    NORAIN_CSV = settings.NORAIN_CSV
+#    LAT_LIMIT = settings.LAT_LIMIT
+#    LON_LIMIT = settings.LON_LIMIT
+#    THRESHOLD_RAIN = settings.THRESHOLD_RAIN
+#    COLUMN_TYPES = settings.COLUMN_TYPES
 
     # ,---------------------,
     # | Code starts here :) |
     # '---------------------'
 
-    git_dir = '/home/david/git-repos/'
-
-    Retrieval = Training(random_seed=7,
-                   run_prefix='final_regr_',
-                   version='R1',
-                   version_nickname='_underc1_0956_',
-                   csv_entry='yearly_br_underc1_0956.csv',
-                   csv_path='/home/david/DATA/',
-                   figure_path=git_dir+'brain/',
-                   model_out_path=git_dir+'brain/',
-                   model_out_name='final_reg_R1')
-
+#    git_dir = '/home/david/git-repos/'
+    
+#------------------------------------------------------------------------------
+# SCREENING CONFIGURATIONS:
+#------------------------------------------------------------------------------
 #    Screening = Training(random_seed=7,
 #                   csv_entry='yearly_br_underc1_0956.csv',
 #                   csv_path='/home/david/CSV/',
 #                   model_out_path='/home/david/DATA/',
 #                   model_out_name='screening_SCR1_')
-
+#------------------------------------------------------------------------------
+# RETRIEVAL CONFIGURATIONS:
+#------------------------------------------------------------------------------
+#    Retrieval = Training(random_seed=7,
+#                   run_prefix='final_regr_',
+#                   version='R1',
+#                   version_nickname='_underc1_hot_0956_',
+#                   csv_entry='yearly_br_underc1_hot_0956.csv',
+#                   csv_path='/home/david/DATA/',
+#                   figure_path=git_dir+'brain/',
+#                   model_out_path=git_dir+'brain/',
+#                   model_out_name='final_reg_R1')
 #------------------------------------------------------------------------------
 # VALIDATION CONFIGURATIONS:
 #------------------------------------------------------------------------------
 #    hdf5 = Validation(path_hdf5='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/')
 
-#    vldar0 = Validation(yaml_version='R1',
-#                        yaml_path=git_dir+'redes_finais/retrieval/output_models/',
-#                        path_csv='/media/DATA/tmp/git-repositories/redes_finais/retrieval/validation/csv/',
-#                        file_csv='teste_manual_195_SCR.csv',
-#                        path_fig=git_dir+'redes_finais/retrieval/validation/figures_vld/')
+#    vld = Validation(yaml_version='R1',
+#                     yaml_path=git_dir+'redes_finais/retrieval/output_models/',
+#                     path_csv='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/clip/',
+#                     file_csv='teste_manual_195_SCR.csv',
+#                     df_1C='1C.GPM.GMI.XCAL2016-C.20181123-S181431-E194705.026915.V05A_clipbr.csv',
+#                     df_2AGPROF='2A.GPM.GMI.GPROF2017v1.20181123-S181431-E194705.026915.V05A_clipbr.csv',
+#                     path_fig=git_dir+'redes_finais/retrieval/validation/figures_vld/')
+#------------------------------------------------------------------------------
+# PREDICTION CONFIGURATIONS:
+#------------------------------------------------------------------------------
+    pred = Prediction(random_seed=7,
+                      file_csv='validation_TagRain_20181123-S181431-E194705.026915.V05A.csv',
+                      path_csv='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/clip/',
+                      yaml_version='SCR1',
+                      yaml_path='/media/DATA/tmp/git-repositories/redes_finais/screening/')
+
 #------------------------------------------------------------------------------
 # CALL THE PROGRAMS:
 #------------------------------------------------------------------------------
-    Retrieval.autoExecReg()
+#    Retrieval.autoExecReg()
 #    Screening.autoExecClass()
-#    vldar0.autoVld()
+    pred.PredictScreening()
+#    vld.Merge_1CGMI_2AGPROF()
 #    hdf5.read_hdf5_1CGMI()
 #    hdf5.read_hdf5_2AGPROF()
 #    hdf5.read_hdf5_2BCMB()
 
-    # rede_pp = Preprocess(
-    #     IN_CSV_LIST,
-    #     OUT_CSV_LIST,
-    #     RAIN_CSV,
-    #     NORAIN_CSV,
-    #     LAT_LIMIT,
-    #     LON_LIMIT,
-    #     THRESHOLD_RAIN,
-    #     COLUMN_TYPES)
+#    rede_pp = Preprocess(
+#            IN_CSV_LIST,
+#            OUT_CSV_LIST,
+#            RAIN_CSV,
+#            NORAIN_CSV,
+#            LAT_LIMIT,
+#            LON_LIMIT,
+#            THRESHOLD_RAIN,
+#            COLUMN_TYPES)
     #
     # rede_pt = PreTraining(IN_CSV_LIST,
     #                       OUT_CSV_LIST,
@@ -120,12 +138,12 @@ def main() -> object:
        # minharede.ConcatenationMonthlyDF(NORAIN_CSV, "yearly_br_norain_var2d.csv")
     # rede_pp.read_shapefile(path_file='/media/DATA/tmp/datasets/regional/qgis/regional_2014-09_clip.shp')
     # ------------------------------------------------------------------------------
-    # df = rede_pp.LoadCSV(rede_pp.IN_CSV_LIST, 'yearly_br_rain_var2d_OK.csv')
-    # df_final = rede_pp.TagRainNoRain(df)
-    # df_name = 'yearly_br_rain_var2d_OK_tag.csv'
-    # path = rede_pp.OUT_CSV_LIST
-    # df_final.to_csv(os.path.join(path, df_name), index=False, sep=",", decimal='.')
-    # print("The file ", df_name, " was saved!")
+#    df = rede_pp.LoadCSV(rede_pp.IN_CSV_LIST, 'validation_dataframe_20181123-S181431-E194705.026915.V05A.csv')
+#    df_final = rede_pp.TagRainNoRain(df)
+#    df_name = 'validation_TagRain_20181123-S181431-E194705.026915.V05A.csv'
+#    path = rede_pp.OUT_CSV_LIST
+#    df_final.to_csv(os.path.join(path, df_name), index=False, sep=",", decimal='.')
+#    print("The file ", df_name, " was saved!")
 
     # ------------------------------------------------------------------------------
     # Append regional df's:
