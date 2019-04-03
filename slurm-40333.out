@@ -1,0 +1,137 @@
+Running on host node010
+Time is Wed Apr 3 00:40:26 -03 2019
+Directory is /home/david/git-repos/brain
+Slurm job ID is 40333
+This job runs on the following machines:
+node010
+Running /home/david/venv366tfcpu/bin/python /home/david/git-repos/brain/main6.py
+Using TensorFlow backend.
+03/04/2019 00:41:25 - update_title_pos
+03/04/2019 00:41:25 - findfont: Matching :family=sans-serif:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
+03/04/2019 00:41:26 - update_title_pos
+03/04/2019 00:41:30 - update_title_pos
+03/04/2019 00:41:30 - update_title_pos
+WARNING:tensorflow:From /home/david/venv366tfcpu/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py:423: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+03/04/2019 00:41:35 - From /home/david/venv366tfcpu/lib/python3.6/site-packages/tensorflow/python/ops/control_flow_ops.py:423: colocate_with (from tensorflow.python.framework.ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Colocations handled automatically by placer.
+WARNING:tensorflow:From /home/david/venv366tfcpu/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+03/04/2019 00:41:35 - From /home/david/venv366tfcpu/lib/python3.6/site-packages/tensorflow/python/ops/math_ops.py:3066: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.cast instead.
+2019-04-03 00:41:35.881419: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2200235000 Hz
+2019-04-03 00:41:35.883351: I tensorflow/compiler/xla/service/service.cc:150] XLA service 0x57d47570 executing computations on platform Host. Devices:
+2019-04-03 00:41:35.883387: I tensorflow/compiler/xla/service/service.cc:158]   StreamExecutor device (0): <undefined>, <undefined>
+03/04/2019 02:01:28 - update_title_pos
+03/04/2019 02:01:28 - findfont: Matching :family=STIXGeneral:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXGeneral ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXGeneral.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXGeneral:style=italic:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXGeneral ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXGeneralItalic.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXGeneral:style=normal:variant=normal:weight=bold:stretch=normal:size=10.0 to STIXGeneral ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXGeneralBol.ttf') with score of 0.000000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXNonUnicode:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXNonUnicode ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXNonUni.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXNonUnicode:style=italic:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXNonUnicode ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXNonUniIta.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXNonUnicode:style=normal:variant=normal:weight=bold:stretch=normal:size=10.0 to STIXNonUnicode ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXNonUniBol.ttf') with score of 0.000000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXSizeOneSym:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXSizeOneSym ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizOneSymReg.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXSizeTwoSym:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXSizeTwoSym ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizTwoSymReg.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXSizeThreeSym:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXSizeThreeSym ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizThreeSymReg.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXSizeFourSym:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXSizeFourSym ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizFourSymReg.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=STIXSizeFiveSym:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to STIXSizeFiveSym ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/STIXSizFiveSymReg.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=cmsy10:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to cmsy10 ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/cmsy10.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=cmr10:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to cmr10 ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/cmr10.ttf') with score of 0.050000.
+03/04/2019 02:01:28 - findfont: Matching :family=cmtt10:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to cmtt10 ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/cmtt10.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - findfont: Matching :family=cmmi10:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to cmmi10 ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/cmmi10.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - findfont: Matching :family=cmb10:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to cmb10 ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/cmb10.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - findfont: Matching :family=cmss10:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to cmss10 ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/cmss10.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - findfont: Matching :family=cmex10:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to cmex10 ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/cmex10.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - findfont: Matching :family=DejaVu Sans:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - findfont: Matching :family=DejaVu Sans:style=italic:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Oblique.ttf') with score of 0.150000.
+03/04/2019 02:01:29 - findfont: Matching :family=DejaVu Sans:style=normal:variant=normal:weight=bold:stretch=normal:size=10.0 to DejaVu Sans ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSans-Bold.ttf') with score of 0.000000.
+03/04/2019 02:01:29 - findfont: Matching :family=DejaVu Sans Mono:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans Mono ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSansMono.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - findfont: Matching :family=DejaVu Sans Display:style=normal:variant=normal:weight=normal:stretch=normal:size=10.0 to DejaVu Sans Display ('/home/david/venv366tfcpu/lib/python3.6/site-packages/matplotlib/mpl-data/fonts/ttf/DejaVuSansDisplay.ttf') with score of 0.050000.
+03/04/2019 02:01:29 - update_title_pos
+03/04/2019 02:03:07 - update_title_pos
+03/04/2019 02:03:07 - update_title_pos
+03/04/2019 02:03:09 - update_title_pos
+03/04/2019 02:03:09 - update_title_pos
+03/04/2019 02:03:09 - update_title_pos
+03/04/2019 02:03:09 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:09 - ticklocs array([1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04])
+03/04/2019 02:03:09 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:09 - ticklocs [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:09 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:09 - ticklocs array([1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04])
+03/04/2019 02:03:09 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:09 - ticklocs [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:09 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:09 - ticklocs array([1.e-05, 1.e-04, 1.e-03, 1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02,
+       1.e+03, 1.e+04])
+03/04/2019 02:03:09 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:09 - ticklocs [2e-05, 3.0000000000000004e-05, 4e-05, 5e-05, 6.000000000000001e-05, 7.000000000000001e-05, 8e-05, 9e-05, 0.0002, 0.00030000000000000003, 0.0004, 0.0005, 0.0006000000000000001, 0.0007, 0.0008, 0.0009000000000000001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009000000000000001, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:09 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:09 - ticklocs array([1.e-05, 1.e-04, 1.e-03, 1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02,
+       1.e+03, 1.e+04])
+03/04/2019 02:03:09 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:09 - ticklocs [2e-05, 3.0000000000000004e-05, 4e-05, 5e-05, 6.000000000000001e-05, 7.000000000000001e-05, 8e-05, 9e-05, 0.0002, 0.00030000000000000003, 0.0004, 0.0005, 0.0006000000000000001, 0.0007, 0.0008, 0.0009000000000000001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009000000000000001, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:09 - update_title_pos
+03/04/2019 02:03:09 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:09 - ticklocs array([1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04])
+03/04/2019 02:03:09 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:09 - ticklocs [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:10 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:10 - ticklocs array([1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02, 1.e+03, 1.e+04])
+03/04/2019 02:03:10 - vmin 0.3836352495054628 vmax 130.33213205630634
+03/04/2019 02:03:10 - ticklocs [0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:10 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:10 - ticklocs array([1.e-05, 1.e-04, 1.e-03, 1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02,
+       1.e+03, 1.e+04])
+03/04/2019 02:03:10 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:10 - ticklocs [2e-05, 3.0000000000000004e-05, 4e-05, 5e-05, 6.000000000000001e-05, 7.000000000000001e-05, 8e-05, 9e-05, 0.0002, 0.00030000000000000003, 0.0004, 0.0005, 0.0006000000000000001, 0.0007, 0.0008, 0.0009000000000000001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009000000000000001, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:10 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:10 - ticklocs array([1.e-05, 1.e-04, 1.e-03, 1.e-02, 1.e-01, 1.e+00, 1.e+01, 1.e+02,
+       1.e+03, 1.e+04])
+03/04/2019 02:03:10 - vmin 0.00042250333099359204 vmax 180.2655967584534
+03/04/2019 02:03:10 - ticklocs [2e-05, 3.0000000000000004e-05, 4e-05, 5e-05, 6.000000000000001e-05, 7.000000000000001e-05, 8e-05, 9e-05, 0.0002, 0.00030000000000000003, 0.0004, 0.0005, 0.0006000000000000001, 0.0007, 0.0008, 0.0009000000000000001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009000000000000001, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.2, 0.30000000000000004, 0.4, 0.5, 0.6000000000000001, 0.7000000000000001, 0.8, 0.9, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0, 90.0, 200.0, 300.0, 400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 2000.0, 3000.0, 4000.0, 5000.0, 6000.0, 7000.0, 8000.0, 9000.0, 20000.0, 30000.0, 40000.0, 50000.0, 60000.0, 70000.0, 80000.0, 90000.0]
+03/04/2019 02:03:10 - update_title_pos
+03/04/2019 02:03:10 - update_title_pos
+TF version 1.13.1
+TF version 1.13.1
+TF version 1.13.1
+original shape:    (3603771, 4)
+transformed shape: (3603771, 2)
+original shape:    (3603771, 6)
+transformed shape: (3603771, 2)
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+gaussian_noise_1 (GaussianNo (None, 12)                0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 33)                429       
+_________________________________________________________________
+dense_2 (Dense)              (None, 11)                374       
+_________________________________________________________________
+dense_3 (Dense)              (None, 1)                 12        
+=================================================================
+Total params: 815
+Trainable params: 815
+Non-trainable params: 0
+_________________________________________________________________
+
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................
+....................................................................................................dict_keys(['val_loss', 'val_mean_absolute_error', 'val_mean_squared_error', 'loss', 'mean_absolute_error', 'mean_squared_error'])
+
+....................Testing set Mean Abs Error:  1.86 sfcprcp
+Saved model to disk
+
+real	82m44.453s
+user	188m42.809s
+sys	28m32.261s
