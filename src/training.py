@@ -23,7 +23,8 @@ from keras.layers import GaussianDropout
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
-from keras.models import model_from_yaml
+#from keras.models import model_from_yaml
+from keras.models import load_model
 
 print('TF version '+tf.__version__)
 
@@ -119,8 +120,8 @@ class Training:
         '''
         model = Sequential()
         model.add(GaussianNoise(0.01, input_shape=(input_size,)))
-        model.add(Dense(33, activation='linear'))
-        model.add(Dense(11, activation='linear'))
+        model.add(Dense(33, activation='relu'))
+        model.add(Dense(11, activation='relu'))
         model.add(Dense(1))
         model.compile(loss='mean_squared_error',
                       optimizer='adam',
@@ -155,7 +156,7 @@ class Training:
                                                             random_state=101)
 
         # Create the instance for KerasRegressor:
-        model = KerasClassifier(build_fn=self.build_class_model)
+        model=self.build_class_model()
         tic()
 #------------------------------------------------------------------------------
         # Display training progress by printing a single dot for each completed epoch
@@ -182,14 +183,17 @@ class Training:
 # ------------------------------------------------------------------------------
         # Saving model to YAML:
 
-        model_yaml = model.to_yaml()
-        with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
-            yaml_file.write(model_yaml)
+#        model_yaml = model.to_yaml()
+#        with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
+#            yaml_file.write(model_yaml)
+#
+#        # serialize weights to HDF5
+#        model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
+#        print("Saved model to disk")
+#        tac()
 
-        # serialize weights to HDF5
-        model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
-        print("Saved model to disk")
-        tac()
+        # Saving the complete model in HDF5:
+        model.save(self.mod_out_pth + self.mod_out_name + '.h5')
 
     # ------------------------------------------------------------------------------
     #
@@ -265,7 +269,7 @@ class Training:
         dataset = dataset.join(df_orig.loc[:, ['sfcprcp']], how='right')
         # ------------------------------------------------------------------------------
 
-        dataset = self.keep_interval(0.5, 75.0, dataset, 'sfcprcp')
+        dataset = self.keep_interval(0.1, 75.0, dataset, 'sfcprcp')
 
         # ----------------------------------------
         # SUBSET BY SPECIFIC CLASS (UNDERSAMPLING)
@@ -427,13 +431,16 @@ class Training:
         # ------------------------------------------------------------------------------
         # Saving model to YAML:
 
-        model_yaml = model.to_yaml()
-        with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
-            yaml_file.write(model_yaml)
+#        model_yaml = model.to_yaml()
+#        with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
+#            yaml_file.write(model_yaml)
+#
+#        # serialize weights to HDF5
+#        model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
+#        print("Saved model to disk")
 
-        # serialize weights to HDF5
-        model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
-        print("Saved model to disk")
+        # Saving the complete model in HDF5:
+        model.save(self.mod_out_pth + self.mod_out_name + '.h5')
 
     # -------------------------------------------------------------------------
     # FUNCTIONS TO MAKE PLOTS ABOUT TRAINING:

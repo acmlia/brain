@@ -34,28 +34,28 @@ def main() -> object:
     # | Code starts here :) |
     # '---------------------'
 
-#    git_dir = '/home/david/git-repos/'
+    git_dir = '/home/david/git-repos/'
     
 #------------------------------------------------------------------------------
 # SCREENING CONFIGURATIONS:
 #------------------------------------------------------------------------------
-#    Screening = Training(random_seed=7,
-#                   csv_entry='yearly_br_underc1_0956.csv',
-#                   csv_path='/home/david/CSV/',
-#                   model_out_path='/home/david/DATA/',
-#                   model_out_name='screening_SCR1_')
+    Screening = Training(random_seed=7,
+                   csv_entry='yearly_br_underc1_hot_0956.csv',
+                   csv_path='/home/david/DATA/',
+                   model_out_path='/home/david/DATA/',
+                   model_out_name='screening_SCR1_')
 #------------------------------------------------------------------------------
 # RETRIEVAL CONFIGURATIONS:
 #------------------------------------------------------------------------------
 #    Retrieval = Training(random_seed=7,
 #                   run_prefix='final_regr_',
-#                   version='R1',
-#                   version_nickname='_underc1_hot_0956_',
-#                   csv_entry='yearly_br_underc1_hot_0956.csv',
+#                   version='R6',
+#                   version_nickname='_OK_TAG_',
+#                   csv_entry='yearly_clip_br_var2d_OK_TAG.csv',
 #                   csv_path='/home/david/DATA/',
 #                   figure_path=git_dir+'brain/',
 #                   model_out_path=git_dir+'brain/',
-#                   model_out_name='final_reg_R1')
+#                   model_out_name='final_reg_R6')
 #------------------------------------------------------------------------------
 # VALIDATION CONFIGURATIONS:
 #------------------------------------------------------------------------------
@@ -68,22 +68,25 @@ def main() -> object:
 #                     df_1C='1C.GPM.GMI.XCAL2016-C.20181123-S181431-E194705.026915.V05A_clipbr.csv',
 #                     df_2AGPROF='2A.GPM.GMI.GPROF2017v1.20181123-S181431-E194705.026915.V05A_clipbr.csv',
 #                     path_fig=git_dir+'redes_finais/retrieval/validation/figures_vld/')
+#	
+#    vld = Validation(path_csv='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/clip/',
+#                     file_csv='validation_dataframe_20181123-S181431-E194705.026915.V05A.csv')
 #------------------------------------------------------------------------------
 # PREDICTION CONFIGURATIONS:
 #------------------------------------------------------------------------------
-    pred = Prediction(random_seed=7,
-                      file_csv='validation_TagRain_20181123-S181431-E194705.026915.V05A.csv',
-                      path_csv='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/clip/',
-                      yaml_version='SCR1',
-                      yaml_path='/media/DATA/tmp/git-repositories/redes_finais/screening/')
+#    pred = Prediction(random_seed=7,
+#                      file_csv='validation_TagRain_20181123-S181431-E194705.026915.V05A.csv',
+#                      path_csv='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/clip/',
+#                      yaml_version='SCR1',
+#                      yaml_path='/media/DATA/tmp/git-repositories/redes_finais/screening/')
 
 #------------------------------------------------------------------------------
 # CALL THE PROGRAMS:
 #------------------------------------------------------------------------------
 #    Retrieval.autoExecReg()
 #    Screening.autoExecClass()
-    pred.PredictScreening()
-#    vld.Merge_1CGMI_2AGPROF()
+#    pred.PredictScreening()
+#    vld.AddAttributesMerge()
 #    hdf5.read_hdf5_1CGMI()
 #    hdf5.read_hdf5_2AGPROF()
 #    hdf5.read_hdf5_2BCMB()
