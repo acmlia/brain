@@ -29,33 +29,39 @@ class Validation:
     """
     This module is intended to automate the TensorFlow Neural Network training.
     """
+    file = ''
+    path = ''
     ymlv = ''
     ymlp = ''
     ymlf = ''
-    path_csv = ''
-    file_csv = ''
-    path_fig = ''
     vrn = ''
     path_hdf5 = ''
+    path_fig = ''
+    df_1C = ''
+    df_2AGPROF = ''
 
-    def __init__(self, yaml_version='',
-                 yaml_path='',
+    def __init__(self, file_csv='',
                  path_csv='',
-                 file_csv='',
-                 df_1C ='',
-                 df_2AGPROF='',
+                 yaml_version='',
+                 yaml_path='',
+                 yaml_file='',
+                 version='',
+                 path_hdf5='',
                  path_fig='',
-                 path_hdf5=''):
+                 df_1C='',
+                 df_2AGPROF=''):
 
+        self.file = file_csv
+        self.path = path_csv
         self.ymlv = yaml_version
         self.ymlp = yaml_path
-        self.path_csv = path_csv
-        self.file_csv = file_csv
+        self.ymlf = yaml_file
+        self.vrn = version
+        self.path_hdf5 = path_hdf5
+        self.path_fig = path_fig
         self.df_1C = df_1C
         self.df_2AGPROF = df_2AGPROF
-        self.path_fig = path_fig
-        self.vrn = yaml_version
-        self.path_hdf5 = path_hdf5
+
 
     def autoVld(self):
         ## load YAML and create model
@@ -471,22 +477,60 @@ class Validation:
             file_name = os.path.basename(hdffile.replace(".HDF5", ".csv"))
             print("NAME:\n", file_name, '\n')
             print('CSVDIR: ', csvdir)
-            print("TESTE:\n", csvdir + file_name, '\n')
+            print("TEST PATH:\n", csvdir + file_name, '\n')
             df.to_csv((csvdir + file_name), index=False, sep=",", decimal='.')
             print("Dataframe saved!")
 
 
     def Merge_1CGMI_2AGPROF(self):
 
-        df1 = pd.read_csv(os.path.join(self.path_csv, self.df_1C), sep=',', decimal='.')
-        df2 = pd.read_csv(os.path.join(self.path_csv, self.df_2AGPROF), sep=',', decimal='.')
+        
+        df2 = pd.read_csv(os.path.join(self.path, self.df_2AGPROF), sep=',', decimal='.')
 
         lat_df2 = df2.pop('lat')
         lon_df2 = df2.pop('lon')
-        df_final = pd.DataFrame()
+        df1 = pd.read_csv(os.path.join(self.path, self.df_1C), sep=',', decimal='.')
         df_final=df1.join(df2, how='right')
         filename=self.df_1C[22:58]
         filename = 'validation_dataframe_'+filename+'.csv'
-        df_final.to_csv((self.path_csv + filename), index=False, sep=",", decimal='.')
-        print("Dataframe created!")
+        df_final.to_csv((self.path + filename), index=False, sep=",", decimal='.')
+        print("The file ", filename, " was genetared!")
         return df_final
+    
+    def AddAttributesMerge(self):
+
+        df = pd.read_csv(os.path.join(self.path, self.file), sep=',', decimal='.')
+        
+        df['10VH'] = df['10V'] - df['10H']
+        df['18VH'] = df['18V'] - df['18H']
+        df['36VH'] = df['36V'] - df['36H']
+        df['89VH'] = df['89V'] - df['89H']
+        df['166VH'] = df['166V'] - df['166H']
+        df['183VH'] = df['186V'] - df['190V']
+        df['SSI'] = df['18V'] - df['36V']
+        df['delta_neg'] = df['18V'] - df['18H']
+        df['delta_pos'] = df['18V'] + df['18H']
+        df['MPDI'] = np.divide(df['delta_neg'], df['delta_pos'])
+        df['MPDI_scaled'] = df['MPDI']*600
+
+        # Including the PCT formulae: PCTf= (1+alfa)*TBfv - alfa*TBfh
+        alfa10 = 1.5
+        alfa18 = 1.4
+        alfa36 = 1.15
+        alfa89 = 0.7
+
+        df['PCT10'] = (1+ alfa10)*df['10V'] - alfa10*df['10H']
+        df['PCT18'] = (1+ alfa18)*df['18V'] - alfa18*df['18H']
+        df['PCT36'] = (1+ alfa36)*df['36V'] - alfa36*df['36H']
+        df['PCT89'] = (1+ alfa89)*df['89V'] - alfa89*df['89H']
+
+        rain_pixels = np.where((df['sfcprcp'] >= 0.1))
+        norain_pixels = np.where((df['sfcprcp'] < 0.1))
+        df['TagRain'] =""
+        df['TagRain'].iloc[rain_pixels] = 1
+        df['TagRain'].iloc[norain_pixels] = 0
+
+        filename = 'validation_all_atrib_'+self.file[21:57]+'.csv'
+        df.to_csv(os.path.join(self.path, filename), index=False, sep=",", decimal='.')
+        print("The file ", filename, " was genetared!")
+        return df

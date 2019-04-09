@@ -45,7 +45,7 @@ class CategoricalMetrics:
         ets = (tp - ph) / (tp + fp + fn - ph)
         hss = ((tp * tn) - (fp * fn)) / ((((tp + fn) * (fn + tn)) + ((tp + fp) * (fp + tn))) / 2)
         hkd = pod - pofd
-        return accuracy, bias, pod, pofd, far, csi, ets, hss, hkd
+        return accuracy, bias, pod, pofd, far, csi, ph, ets, hss, hkd
 
     def accuracy(self, obs, pred):
         tptn = self.get_TPTN(obs, pred)
