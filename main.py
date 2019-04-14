@@ -84,7 +84,7 @@ def main() -> object:
 # CALL THE PROGRAMS:
 #------------------------------------------------------------------------------
 #    Retrieval.autoExecReg()
-#    Screening.autoExecClass()
+    Screening.autoExecClass()
 #    pred.PredictScreening()
 #    vld.AddAttributesMerge()
 #    hdf5.read_hdf5_1CGMI()
