@@ -38,7 +38,11 @@ class CategoricalMetrics:
         accuracy = (tp + tn) / len(tptn)
         bias = (tp + fp) / (tp + fn)
         pod = tp / (tp + fn)
-        pofd = fp / (fp + tn)
+        try:
+            pofd = fp / (fp + tn)
+        except ZeroDivisionError as e:
+            pofd = 0
+            print(e)
         far = fp / (tp + fp)
         csi = tp / (tp + fp + fn)
         ph = ((tp + tn) * (tp + fp)) / len(tptn)

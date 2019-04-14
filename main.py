@@ -34,16 +34,16 @@ def main() -> object:
     # | Code starts here :) |
     # '---------------------'
 
-    git_dir = '/home/david/git-repos/'
+    #git_dir = '/home/david/git-repos/'
     
 #------------------------------------------------------------------------------
 # SCREENING CONFIGURATIONS:
 #------------------------------------------------------------------------------
-    Screening = Training(random_seed=7,
-                   csv_entry='yearly_br_underc1_hot_0956.csv',
-                   csv_path='/home/david/DATA/',
-                   model_out_path='/home/david/DATA/',
-                   model_out_name='screening_SCR1_')
+#    Screening = Training(random_seed=7,
+#                   csv_entry='yearly_br_underc1_hot_0956.csv',
+#                   csv_path='/home/david/DATA/',
+#                   model_out_path='/home/david/DATA/',
+#                   model_out_name='screening_SCR1_')
 #------------------------------------------------------------------------------
 # RETRIEVAL CONFIGURATIONS:
 #------------------------------------------------------------------------------
@@ -74,18 +74,19 @@ def main() -> object:
 #------------------------------------------------------------------------------
 # PREDICTION CONFIGURATIONS:
 #------------------------------------------------------------------------------
-#    pred = Prediction(random_seed=7,
-#                      file_csv='validation_TagRain_20181123-S181431-E194705.026915.V05A.csv',
-#                      path_csv='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/clip/',
-#                      yaml_version='SCR1',
-#                      yaml_path='/media/DATA/tmp/git-repositories/redes_finais/screening/')
+    pred = Prediction(random_seed=7,
+                      file_csv='validation_all_atrib_20181123-S181431-E194705.026915.V05A.csv',
+                      path_csv='/mnt/AC9AF51E9AF4E5AC/A1ML/phd_datasets/',
+                      yaml_version='SCR1',
+                      yaml_path='/mnt/AC9AF51E9AF4E5AC/repos/jobs/',
+                      yaml_file='screening_SCR1_.h5')
 
 #------------------------------------------------------------------------------
 # CALL THE PROGRAMS:
 #------------------------------------------------------------------------------
 #    Retrieval.autoExecReg()
 #    Screening.autoExecClass()
-#    pred.PredictScreening()
+    pred.PredictScreening()
 #    vld.AddAttributesMerge()
 #    hdf5.read_hdf5_1CGMI()
 #    hdf5.read_hdf5_2AGPROF()

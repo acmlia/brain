@@ -119,14 +119,16 @@ class Prediction:
         #------------------------------------------------------------------------------
         #------------------------------------------------------------------------------ 
         ## load YAML and create model
-        yaml_file = open(self.ymlp+'screening_'+self.ymlv+'.yaml', 'r')
-        loaded_model_yaml = yaml_file.read()
-        yaml_file.close()
-        loaded_model = model_from_yaml(loaded_model_yaml)
-        # load weights into new model
-        loaded_model.load_weights(self.ymlp+'screening_'+self.ymlv+'.h5')
-        print("Loaded models yaml and h5 from disk!")
+#        yaml_file = open(self.ymlp+'screening_'+self.ymlv+'.yaml', 'r')
+#        loaded_model_yaml = yaml_file.read()
+#        yaml_file.close()
+#        loaded_model = model_from_yaml(loaded_model_yaml)
+#        # load weights into new model
+#        loaded_model.load_weights(self.ymlp+'screening_'+self.ymlv+'.h5')
+#        print("Loaded models yaml and h5 from disk!")
         #------------------------------------------------------------------------------
+        loaded_model = keras.models.load_model(self.ymlp+self.ymlf)
+        loaded_model.summary()
         #------------------------------------------------------------------------------
         
         # Fix random seed for reproducibility:
@@ -151,7 +153,7 @@ class Prediction:
 #                                                            random_state=101)
 
         # Doing prediction from the test dataset:
-        y_pred = loaded_model.predict(x_normalized)
+        y_pred = loaded_model.predict_classes(x_normalized)
         y_pred = np.ravel(y_pred)
 
         # ------------------------------------------------------------------------------
@@ -162,6 +164,7 @@ class Prediction:
         print('>>>> DEBUG >>>>', y_true,'\n',y_pred)
         val_accuracy, val_bias, val_pod, val_pofd, val_far, val_csi, val_ph, val_ets, val_hss, val_hkd = skills.metrics(y_true, y_pred)
         
+        print(val_accuracy, val_bias, val_pod, val_pofd, val_far, val_csi, val_ph, val_ets, val_hss, val_hkd)
         #converting to text file
         print("converting arrays to text files")
         np.savetxt('file_numpy.txt', zip(val_accuracy, val_bias, val_pod,
@@ -180,7 +183,7 @@ class Prediction:
 
         return df
 
-    def PredictRetrieval():
+    def PredictRetrieval(self):
 #                # Fix random seed for reproducibility:
         np.random.seed(self.seed)
 # ------------------------------------------------------------------------------
