@@ -85,6 +85,34 @@ class PreProcess:
         return regional_dataframe
 
     @staticmethod
+    def concatenate_df_list(df_list):
+        """
+        Concatenate a given list of dataframes into one single dataframe.
+
+        """
+        # ATTENTION: Set the right path, if is for RAIN or NORAIN dataframes:
+        frames = []
+        for idx, file in enumerate(os.listdir(path)):
+            if file.startswith(".", 0, len(file)):
+                print("File name starts with point: ", file)
+            else:
+                # logging.debug(file)
+                # print("posicao do loop: {} | elemento da pasta: {}".format(idx, file))
+                df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.', encoding="utf8")
+                df.reset_index(drop=True, inplace=True)
+                frames.append(df)
+                # logging.debug(frames)
+
+        # Concatenation of the monthly Dataframes into the yearly Dataframe:
+        try:
+            dataframe_yrly = pd.concat(frames, sort=False, ignore_index=True, verify_integrity=True)
+        except ValueError as e:
+            logging.error("ValueError:", e)
+            sys.exit(1)
+
+        return dataframe_yrly
+
+    @staticmethod
     def compute_additional_input_vars(df):
         '''
         Create new input variables from the dataset, as PCT, SSI, MPDI, etc...
@@ -103,6 +131,7 @@ class PreProcess:
             df['delta_pos'] = df['18V'] + df['18H']
             df['MPDI'] = np.divide(df['delta_neg'], df['delta_pos'])
             df['MPDI_scaled'] = df['MPDI'] * 600
+            df['SI'] = df['23V'] - df['89V']
 
             # Inclugin the PCT formulae: PCTf= (1+alfa)*TBfv - alfa*TBfh
             alfa10 = 1.5
@@ -119,7 +148,7 @@ class PreProcess:
             logging.info(f'Some of the expected columns where not present in the input dataframe.')
             logging.info('Expected columns:'
                          '\n{}\n'
-                         'Found coluns:'
+                         'Found columns:'
                          '\n{}\n'
                          'System halt by unmet conditions.'.format(expected_columns, list(df.columns.values)))
             sys.exit(1)

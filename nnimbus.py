@@ -6,6 +6,7 @@
 
 import time
 import logging
+import sys
 
 from decouple import config
 from core.pre_process import PreProcess
