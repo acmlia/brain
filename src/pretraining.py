@@ -61,7 +61,7 @@ class PreTraining:
             df['MPDI'] = np.divide(df['delta_neg'], df['delta_pos'])
             df['MPDI_scaled'] = df['MPDI']*600
             
-            # Inclugin the PCT formulae: PCTf= (1+alfa)*TBfv - alfa*TBfh
+            # Including the PCT formulae: PCTf= (1+alfa)*TBfv - alfa*TBfh
             alfa10 = 1.5
             alfa18 = 1.4
             alfa36 = 1.15

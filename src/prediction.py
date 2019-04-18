@@ -20,7 +20,10 @@ from sklearn.preprocessing import Normalizer
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from collections import Counter
-from src.meteoro_skills import CategoricalMetrics
+from src.meteoro_skills import CategoricalScores
+from src.meteoro_skills import ContinuousScores
+
+
 
 import tensorflow as tf
 from tensorflow import keras
@@ -119,13 +122,15 @@ class Prediction:
         #------------------------------------------------------------------------------
         #------------------------------------------------------------------------------ 
         ## load YAML and create model
-        yaml_file = open(self.ymlp+'screening_'+self.ymlv+'.yaml', 'r')
-        loaded_model_yaml = yaml_file.read()
-        yaml_file.close()
-        loaded_model = model_from_yaml(loaded_model_yaml)
-        # load weights into new model
-        loaded_model.load_weights(self.ymlp+'screening_'+self.ymlv+'.h5')
-        print("Loaded models yaml and h5 from disk!")
+#        yaml_file = open(self.ymlp+'screening_'+self.ymlv+'.yaml', 'r')
+#        loaded_model_yaml = yaml_file.read()
+#        yaml_file.close()
+#        loaded_model = model_from_yaml(loaded_model_yaml)
+#        # load weights into new model
+#        loaded_model.load_weights(self.ymlp+'screening_'+self.ymlv+'.h5')
+#        print("Loaded models yaml and h5 from disk!")
+        loaded_model = keras.models.load_model(self.ymlp+self.ymlf)
+        loaded_model.summary()
         #------------------------------------------------------------------------------
         #------------------------------------------------------------------------------
         
@@ -134,11 +139,9 @@ class Prediction:
 
         # Load dataset:
         df = pd.read_csv(os.path.join(self.path, self.file), sep=',', decimal='.')
-        x, y= df.loc[:,['36V', '89V', '166V', '190V']], df.loc[:,['TagRain']]
-        
+        x = df.loc[:,['36V', '89V', '166V', '190V']]
+
         x_arr = np.asanyarray(x)
-        y_arr = np.asanyarray(y)
-        y_true = np.ravel(y_arr)
 
         # Scaling the input paramaters:
 #       scaler_min_max = MinMaxScaler()
@@ -151,25 +154,34 @@ class Prediction:
 #                                                            random_state=101)
 
         # Doing prediction from the test dataset:
-        y_pred = loaded_model.predict(x_normalized)
+        y_pred = loaded_model.predict_classes(x_normalized)
         y_pred = np.ravel(y_pred)
 
         # ------------------------------------------------------------------------------
         # ------------------------------------------------------------------------------
         # Appplying meteorological skills to verify the performance of the model, in this case, categorical scores:
 
-        skills = CategoricalMetrics()
+        skills = CategoricalScores()
         print('>>>> DEBUG >>>>', y_true,'\n',y_pred)
-        val_accuracy, val_bias, val_pod, val_pofd, val_far, val_csi, val_ph, val_ets, val_hss, val_hkd = skills.metrics(y_true, y_pred)
+        val_accuracy, val_bias, val_pod, val_pofd, val_far, val_csi, val_ph, val_ets, val_hss, val_hkd, val_num_pixels = skills.metrics(y_true, y_pred)
         
         #converting to text file
         print("converting arrays to text files")
-        np.savetxt('file_numpy.txt', zip(val_accuracy, val_bias, val_pod,
-                                         val_pofd, val_far, val_csi, val_ph,
-                                         val_ets, val_hss, val_hkd),
-                                         fmt="%5.2f")
-        print("Text file saved!")
+        my_scores = {'val_accuracy': val_accuracy,
+                     'val_bias': val_bias,
+                     'val_pod': val_pod,
+                     'val_pofd': val_pofd,
+                     'val_far': val_far,
+                     'val_csi': val_csi,
+                     'val_ph': val_ph,
+                     'val_ets': val_ets,
+                     'val_hss': val_hss,
+                     'val_hkd': val_hkd,
+                     'val_num_pixels': val_num_pixels}
 
+        with open('cateorical_scores_R1.txt', 'w') as myfile:
+             myfile.write(str(my_scores))
+        print("Text file saved!")
         # ------------------------------------------------------------------------------
         # ------------------------------------------------------------------------------
         df['SCR'] = ""
@@ -180,8 +192,19 @@ class Prediction:
 
         return df
 
-    def PredictRetrieval():
-#                # Fix random seed for reproducibility:
+    def PredictRetrieval(self):
+        #------------------------------------------------------------------------------ 
+        #load YAML and create model
+        yaml_file = open(self.ymlp+'tf_reg_'+self.ymlv+'.yaml', 'r')
+        loaded_model_yaml = yaml_file.read()
+        yaml_file.close()
+        loaded_model = model_from_yaml(loaded_model_yaml)
+        # load weights into new model
+        loaded_model.load_weights(self.ymlp+'tf_reg_'+self.ymlv+'.h5')
+        print("Loaded models yaml and h5 from disk!")
+        #------------------------------------------------------------------------------
+        #------------------------------------------------------------------------------
+#       Fix random seed for reproducibility:
         np.random.seed(self.seed)
 # ------------------------------------------------------------------------------
 
@@ -211,7 +234,7 @@ class Prediction:
 
         # ------------------------------------------------------------------------------
         # Verifying the number of components that most contribute:
-        pca = self.PCA
+        pca = PCA()
         pca1 = pca.fit(TB1)
         plt.plot(np.cumsum(pca1.explained_variance_ratio_))
         plt.xlabel('Number of components for TB1')
@@ -247,8 +270,52 @@ class Prediction:
         dataset = PCA1.join(PCA2, how='right')
         dataset = dataset.join(ancillary, how='right')
         dataset = dataset.join(df_orig.loc[:, ['sfcprcp']], how='right')
+        dataset = dataset.join(df_orig.loc[:, ['SCR']], how='right')
         # ------------------------------------------------------------------------------
+        #dataset = self.keep_interval(0.1, 75.0, dataset, 'sfcprcp')
+        
+        NaN_pixels = np.where((dataset['sfcprcp'] != -9999.0))
+        dataset = dataset.iloc[NaN_pixels]
+        SCR_pixels = np.where((dataset['SCR'] == 1))
+        dataset = dataset.iloc[SCR_pixels]
+        dataset_index=dataset.index.values
+        
+        SCR = dataset.pop('SCR')
+        y_true = dataset.pop('sfcprcp')
 
-        dataset = self.keep_interval(0.1, 75.0, dataset, 'sfcprcp')
+        x_normed = dataset.values
+        y_pred = loaded_model.predict(x_normed).flatten()
 
-#### COTNINUAR
+        # ------------------------------------------------------------------------------
+        # Appplying meteorological skills to verify the performance of the model, in this case, categorical scores:
+
+        skills = ContinuousScores()
+        print('>>>> DEBUG >>>>', y_true,'\n',y_pred)
+        val_y_pred_mean, val_y_true_mean, val_mae, val_rmse, val_std, val_fseperc, val_fse, val_corr, val_num_pixels = skills.metrics(y_true, y_pred)
+        
+        #converting to text file
+        print("converting arrays to text files")
+        my_scores = {'val_y_pred_mean': val_y_pred_mean,
+                     'val_y_true_mean': val_y_true_mean,
+                     'val_mae': val_mae,
+                     'val_rmse': val_rmse,
+                     'val_std': val_std,
+                     'val_fseperc': val_fseperc,
+                     'val_fse': val_fse,
+                     'val_corr': val_corr,
+                     'val_num_pixels': val_num_pixels}
+
+        with open(self.path+'continuous_scores_tf_reg_'+self.ymlv+'.txt', 'w') as myfile:
+             myfile.write(str(my_scores))
+        print("Text file saved!")
+
+        # ------------------------------------------------------------------------------
+        # ------------------------------------------------------------------------------
+        df_final = df_orig.iloc[dataset_index]
+        df_final['y_true'] = y_true.values
+        df_final['y_pred'] = y_pred
+        filename=self.file[21:58]
+        filename = 'retrieval_tf_regression_'+self.ymlv+'_'+filename+'.csv'
+        df_final.to_csv(os.path.join(self.path, filename), index=False, sep=",", decimal='.')
+
+        return df_final

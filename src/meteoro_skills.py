@@ -5,9 +5,13 @@ Created on Sun Mar 10 19:48:36 2019
 
 @author: dvdgmf
 """
+import numpy as np
+from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_squared_error
+from math import sqrt
 
 
-class CategoricalMetrics:
+class CategoricalScores:
 
     @staticmethod
     def get_TPTN(obs, pred):
@@ -30,6 +34,7 @@ class CategoricalMetrics:
             print('Invalid list size. Y-Observed and Y-Predicted must match!')
 
     def metrics(self, obs, pred):
+
         tptn = self.get_TPTN(obs, pred)
         tn = tptn.count('TN')
         tp = tptn.count('TP')
@@ -45,76 +50,23 @@ class CategoricalMetrics:
         ets = (tp - ph) / (tp + fp + fn - ph)
         hss = ((tp * tn) - (fp * fn)) / ((((tp + fn) * (fn + tn)) + ((tp + fp) * (fp + tn))) / 2)
         hkd = pod - pofd
-        return accuracy, bias, pod, pofd, far, csi, ph, ets, hss, hkd
+        num_pixels=len(obs)
+        return accuracy, bias, pod, pofd, far, csi, ph, ets, hss, hkd, num_pixels
 
-    def accuracy(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tn = tptn.count('TN')
-        tp = tptn.count('TP')
-        accuracy = (tp+tn)/len(tptn)
-        return accuracy
+class ContinuousScores:
 
-    def bias(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tp = tptn.count('TP')
-        fn = tptn.count('FN')
-        fp = tptn.count('FP')
-        bias = (tp+fp)/(tp+fn)
-        return bias
+    def metrics(self, obs, pred):
 
-    def pod(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tp = tptn.count('TP')
-        fn = tptn.count('FN')
-        pod = tp/(tp+fn)
-        return pod
-
-    def pofd(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tn = tptn.count('TN')
-        fp = tptn.count('FP')
-        pofd = fp/(fp+tn)
-        return pofd
-
-    def far(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tp = tptn.count('TP')
-        fp = tptn.count('FP')
-        far = fp/(tp+fp)
-        return far
-
-    def csi(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tp = tptn.count('TP')
-        fn = tptn.count('FN')
-        fp = tptn.count('FP')
-        csi = tp/(tp+fp+fn)
-        return csi
-
-    def ets(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tn = tptn.count('TN')
-        tp = tptn.count('TP')
-        fn = tptn.count('FN')
-        fp = tptn.count('FP')
-        ph = ((tp+tn)*(tp+fp))/len(tptn)
-        ets = (tp - ph)/(tp+fp+fn-ph)
-        return ets
-
-    def hss(self, obs, pred):
-        tptn = self.get_TPTN(obs, pred)
-        tn = tptn.count('TN')
-        tp = tptn.count('TP')
-        fn = tptn.count('FN')
-        fp = tptn.count('FP')
-        hss = ((tp*tn)-(fp*fn))/((((tp+fn)*(fn+tn))+((tp+fp)*(fp+tn)))/2)
-        return hss
-
-    def hkd(self, obs, pred):
-        hkd = self.pod(obs, pred) - self.pofd(obs, pred)
-        return hkd
-
-
+       y_pred_mean=np.nanmean(pred)
+       y_true_mean=np.nanmean(obs)
+       mae = mean_absolute_error(obs,pred)
+       rmse = sqrt(mean_squared_error(obs, pred))
+       std=sqrt(np.nanmean((pred- mae)**2))
+       fseperc=rmse/y_true_mean*100;
+       fse=rmse/y_true_mean
+       corr=np.corrcoef(obs, pred)
+       num_pixels=len(obs)
+       return y_pred_mean, y_true_mean, mae, rmse, std, fseperc, fse, corr, num_pixels
 # ---------------------------------------------
 #obs =   [0, 1, 1, 0, 0, 0, 1, 1, 0]
 #pred =  [0, 1, 0, 0, 1, 0, 1, 1, 0]

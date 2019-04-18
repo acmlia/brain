@@ -13,6 +13,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import QuantileTransformer
 from sklearn.decomposition import PCA
+from src.meteoro_skills import CategoricalScores
+from src.meteoro_skills import ContinuousScores
 
 import tensorflow as tf
 from tensorflow import keras
@@ -41,8 +43,8 @@ def tac():
     (t_hour, t_min) = divmod(t_min, 60)
     print('Time passed: {}hour:{}min:{}sec'.format(t_hour, t_min, t_sec))
 
-def mean_squared_error(y_true, y_pred):
-    return K.mean(K.square(y_pred - y_true), axis=-1)
+def mean_squared_error(y_test, y_pred):
+    return K.mean(K.square(y_pred - y_test), axis=-1)
 # ------------------------------------------------------------------------------
 
 
@@ -53,7 +55,7 @@ class Training:
     PCA = PCA()
     seed = 0
     run_prefix = ''
-    tver = ''
+    version = ''
     vernick = ''
     file = ''
     path = ''
@@ -74,7 +76,7 @@ class Training:
 
         self.run_prefix = run_prefix
         self.seed = random_seed
-        self.tver = version
+        self.ver = version
         self.vernick = version_nickname
         self.file = csv_entry
         self.path = csv_path
@@ -120,8 +122,8 @@ class Training:
         '''
         model = Sequential()
         model.add(GaussianNoise(0.01, input_shape=(input_size,)))
-        model.add(Dense(33, activation='relu'))
-        model.add(Dense(11, activation='relu'))
+        model.add(Dense(24, activation='relu'))
+        model.add(Dense(10, activation='relu'))
         model.add(Dense(1))
         model.compile(loss='mean_squared_error',
                       optimizer='adam',
@@ -236,7 +238,7 @@ class Training:
         plt.plot(np.cumsum(pca1.explained_variance_ratio_))
         plt.xlabel('Number of components for TB1')
         plt.ylabel('Cumulative explained variance');
-        plt.savefig(self.path_fig + self.tver + '_PCA_TB1.png')
+        plt.savefig(self.path_fig + self.version + 'PCA_TB1.png')
         # ---
         pca_trans1 = PCA(n_components=2)
         pca1 = pca_trans1.fit(TB1)
@@ -249,7 +251,7 @@ class Training:
         plt.plot(np.cumsum(pca2.explained_variance_ratio_))
         plt.xlabel('Number of components for TB2')
         plt.ylabel('Cumulative explained variance');
-        plt.savefig(self.path_fig + self.tver + 'PCA_TB2.png')
+        plt.savefig(self.path_fig + self.version + 'PCA_TB2.png')
         # ---
         pca_trans2 = PCA(n_components=2)
         pca2 = pca_trans2.fit(TB2)
@@ -269,16 +271,16 @@ class Training:
         dataset = dataset.join(df_orig.loc[:, ['sfcprcp']], how='right')
         # ------------------------------------------------------------------------------
 
-        dataset = self.keep_interval(0.1, 75.0, dataset, 'sfcprcp')
+        dataset = self.keep_interval(0.2, 110.0, dataset, 'sfcprcp')
 
         # ----------------------------------------
         # SUBSET BY SPECIFIC CLASS (UNDERSAMPLING)
-#        n = 0.90
-#        to_remove = np.random.choice(
-#            dataset.index,
-#            size=int(dataset.shape[0] * n),
-#            replace=False)
-#        dataset = dataset.drop(to_remove)
+        n = 0.98
+        to_remove = np.random.choice(
+            dataset.index,
+            size=int(dataset.shape[0] * n),
+            replace=False)
+        dataset = dataset.drop(to_remove)
 
         # ------------------------------------------------------------------------------
         # Split the data into train and test
@@ -385,11 +387,33 @@ class Training:
         loss, mae, mse = model.evaluate(normed_test_data, y_test, verbose=0)
 
         print("Testing set Mean Abs Error: {:5.2f} sfcprcp".format(mae))
-
+        #------------------------------------------------------------------------------
+        # -----------------------------------------------------------------------------
         # Make predictions
         # Finally, predict SFCPRCP values using data in the testing set:
 
         test_predictions = model.predict(normed_test_data).flatten()
+
+        # Appplying meteorological skills to verify the performance of the TRAIN/TESTE model, in this case, continous scores:
+
+        skills = ContinuousScores()
+        val_y_pred_mean, val_y_test_mean, val_mae, val_rmse, val_std, val_fseperc, val_fse, val_corr, val_num_pixels = skills.metrics(y_test, test_predictions)
+        
+        #converting to text file
+        print("converting arrays to text files")
+        my_scores = {'val_y_pred_mean': val_y_pred_mean,
+                     'val_y_test_mean': val_y_test_mean,
+                     'val_mae': val_mae,
+                     'val_rmse': val_rmse,
+                     'val_std': val_std,
+                     'val_fseperc': val_fseperc,
+                     'val_fse': val_fse,
+                     'val_corr': val_corr,
+                     'val_num_pixels': val_num_pixels}
+
+        with open(self.path_fig+'continuous_scores_TEST_TRAIN_'+self.version+'.txt', 'w') as myfile:
+             myfile.write(str(my_scores))
+        print("Text file saved!")
 
         plt.figure()
         plt.scatter(y_test, test_predictions)
@@ -415,7 +439,7 @@ class Training:
         fig_name = self.fig_title + "_plot_scatter_LOG_y_test_vs_y_pred.png"
         plt.savefig(self.path_fig+fig_name)
         plt.clf()
-#------------------------------------------------------------------------------
+        #------------------------------------------------------------------------------
         # ------------------------------------------------------------------------------
         # It looks like our model predicts reasonably well.
         # Let's take a look at the error distribution.
@@ -427,20 +451,36 @@ class Training:
         fig_name = self.fig_title + "_prediction_error.png"
         plt.savefig(self.path_fig + fig_name)
         plt.clf()
+        
+        # ------------------------------------------------------------------------------
+        # HISTROGRAM 2D
+
+        plt.hist2d(y_test, test_predictions, cmin=1, bins=(50, 50), cmap=plt.cm.jet, range=np.array([(0.2, 110), (0.2, 110)]))
+        plt.axis('equal')
+        plt.axis('square')
+        plt.plot([0, 100], [0, 100], ls="--", c=".3")
+        plt.xlim([0, max(y_test)])
+        plt.ylim([0, max(y_test)])
+        plt.colorbar()
+        plt.xlabel("Observed rain rate (mm/h) - Training")
+        plt.ylabel("Predicted rain rate (mm/h) - Training")
+        fig_name = self.fig_title + "_hist2D.png"
+        plt.savefig(self.path_fig + fig_name)
+        plt.clf()
 
         # ------------------------------------------------------------------------------
         # Saving model to YAML:
 
-#        model_yaml = model.to_yaml()
-#        with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
-#            yaml_file.write(model_yaml)
-#
-#        # serialize weights to HDF5
-#        model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
-#        print("Saved model to disk")
+        model_yaml = model.to_yaml()
+        with open(self.mod_out_pth + self.mod_out_name + '.yaml', 'w') as yaml_file:
+            yaml_file.write(model_yaml)
+
+        # serialize weights to HDF5
+        model.save_weights(self.mod_out_pth + self.mod_out_name + '.h5')
+        print("Saved model to disk")
 
         # Saving the complete model in HDF5:
-        model.save(self.mod_out_pth + self.mod_out_name + '.h5')
+        model.save(self.mod_out_pth + self.mod_out_name + '_tf.h5')
 
     # -------------------------------------------------------------------------
     # FUNCTIONS TO MAKE PLOTS ABOUT TRAINING:

@@ -35,27 +35,37 @@ def main() -> object:
     # '---------------------'
 
     git_dir = '/home/david/git-repos/'
-    
+#    git_dir = '/media/DATA/tmp/git-repositories/'
 #------------------------------------------------------------------------------
 # SCREENING CONFIGURATIONS:
 #------------------------------------------------------------------------------
-    Screening = Training(random_seed=7,
-                   csv_entry='yearly_br_underc1_hot_0956.csv',
-                   csv_path='/home/david/DATA/',
-                   model_out_path='/home/david/DATA/',
-                   model_out_name='screening_SCR1_')
+#    Screening = Training(random_seed=7,
+#                   csv_entry='yearly_br_underc1_hot_0956.csv',
+#                   csv_path='/home/david/DATA/',
+#                   model_out_path='/home/david/DATA/',
+#                   model_out_name='screening_SCR1_')
 #------------------------------------------------------------------------------
 # RETRIEVAL CONFIGURATIONS:
 #------------------------------------------------------------------------------
 #    Retrieval = Training(random_seed=7,
-#                   run_prefix='final_regr_',
-#                   version='R6',
+#                   run_prefix='ann_1_',
+#                   version='ann_1',
 #                   version_nickname='_OK_TAG_',
 #                   csv_entry='yearly_clip_br_var2d_OK_TAG.csv',
 #                   csv_path='/home/david/DATA/',
-#                   figure_path=git_dir+'brain/',
-#                   model_out_path=git_dir+'brain/',
-#                   model_out_name='final_reg_R6')
+#                   figure_path=git_dir+'ann_training/',
+#                   model_out_path=git_dir+'ann_training/',
+#                   model_out_name='final_ann_1')
+
+    Retrieval = Training(random_seed=7,
+                   run_prefix='ann_1_',
+                   version='ann_1',
+                   version_nickname='_under_c1_hot_0956_',
+                   csv_entry='yearly_br_underc1_hot_0956.csv',
+                   csv_path='/media/DATA/tmp/datasets/brazil/brazil_qgis/csv/',
+                   figure_path=git_dir+'ann_training/',
+                   model_out_path=git_dir+'ann_training/',
+                   model_out_name='final_ann_1')
 #------------------------------------------------------------------------------
 # VALIDATION CONFIGURATIONS:
 #------------------------------------------------------------------------------
@@ -75,17 +85,21 @@ def main() -> object:
 # PREDICTION CONFIGURATIONS:
 #------------------------------------------------------------------------------
 #    pred = Prediction(random_seed=7,
-#                      file_csv='validation_TagRain_20181123-S181431-E194705.026915.V05A.csv',
+#                      version='T13',
+#                      file_csv='validation_all_atrib_SCR_pklmodel_20181123-S181431-E194705.026915.V05A.csv',
 #                      path_csv='/media/DATA/tmp/git-repositories/validation/HDF5/20181123/clip/',
-#                      yaml_version='SCR1',
-#                      yaml_path='/media/DATA/tmp/git-repositories/redes_finais/screening/')
+#                      figure_path='/media/DATA/tmp/git-repositories/redes_finais/retrieval/validation/20181123/',
+#                      yaml_version='T13',
+#                      yaml_file='tf_regression_sfcprcp_',
+#                      yaml_path='/media/DATA/tmp/git-repositories/jobs/tf_regression/')
 
 #------------------------------------------------------------------------------
 # CALL THE PROGRAMS:
 #------------------------------------------------------------------------------
-#    Retrieval.autoExecReg()
-    Screening.autoExecClass()
+    Retrieval.autoExecReg()
+#    Screening.autoExecClass()
 #    pred.PredictScreening()
+#    pred.PredictRetrieval()
 #    vld.AddAttributesMerge()
 #    hdf5.read_hdf5_1CGMI()
 #    hdf5.read_hdf5_2AGPROF()
