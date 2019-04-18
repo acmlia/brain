@@ -4,6 +4,7 @@ import sys
 
 import pandas as pd
 import numpy as np
+from core import utils
 
 class PreProcess:
     """
@@ -47,7 +48,7 @@ class PreProcess:
             logging.info(f"Unexpected file format: {file} - Skipping...")
             return None
 
-    def load_alternative_csv(self, path, file):
+    def load_csv(self, path, file):
         """
         Nada.
         """
@@ -55,14 +56,25 @@ class PreProcess:
         if file.startswith(".", 0, len(file)):
             logging.info(f"File name starts with point: {file} - Skipping...")
         elif file.endswith(".csv"):
-            df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.',
-                             dtype=self.COLUMN_TYPES)
+            df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.')
             logging.info(f'{file} successfully loaded into a dataframe.')
         if not df.empty:
             return df
         else:
             logging.info(f"Unexpected file format: {file}")
             sys.exit('Empty CSV is invalid - System halt by unmet conditions.')
+
+    def load_csv_list(self, path):
+        """
+        This function will read all csv files inside the given path:
+        """
+        df_list = []
+        logging.info(f'Reading files:\n{os.listdir(path)}\n')
+        for file in os.listdir(path):
+            df = self.load_csv(path, file)
+            df_list.append(df)
+        logging.info(f'Final list size after loading: {len(df_list)} files.')
+        return df_list
 
     @staticmethod
     def extract_region(dataframe, lat_max, lat_min, lon_max, lon_min):
@@ -84,33 +96,31 @@ class PreProcess:
         regional_dataframe = dataframe.iloc[subset]
         return regional_dataframe
 
-    @staticmethod
-    def concatenate_df_list(df_list):
+    def concatenate_df_list(self, df_list):
         """
         Concatenate a given list of dataframes into one single dataframe.
-
         """
-        # ATTENTION: Set the right path, if is for RAIN or NORAIN dataframes:
-        frames = []
-        for idx, file in enumerate(os.listdir(path)):
-            if file.startswith(".", 0, len(file)):
-                print("File name starts with point: ", file)
-            else:
-                # logging.debug(file)
-                # print("posicao do loop: {} | elemento da pasta: {}".format(idx, file))
-                df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.', encoding="utf8")
-                df.reset_index(drop=True, inplace=True)
-                frames.append(df)
-                # logging.debug(frames)
-
+        # Diagnose list size
+        checksum = 0
+        logging.info(f'Total number of dataframes in list: {len(df_list)}')
+        for idx, df in enumerate(df_list):
+            logging.info(f'Dataframe #{idx} size: {len(df)}')
+            checksum += len(df)
         # Concatenation of the monthly Dataframes into the yearly Dataframe:
         try:
-            dataframe_yrly = pd.concat(frames, sort=False, ignore_index=True, verify_integrity=True)
+            logging.info(f'Concatenating files... (this may take a while)')
+            utils.tic()
+            concatenated_df = pd.concat(df_list, sort=False, ignore_index=True, verify_integrity=True)
+            t_hour, t_min, t_sec = utils.tac_api()
+            logging.info(f'Concatenating successfully done in {t_hour}h:{t_min}m:{t_sec}s\n'
+                         f'Sum of dataframes in the input list: {checksum}\n'
+                         f'Final dataframe size --------------: {len(concatenated_df)}')
+
         except ValueError as e:
             logging.error("ValueError:", e)
             sys.exit(1)
 
-        return dataframe_yrly
+        return concatenated_df
 
     @staticmethod
     def compute_additional_input_vars(df):
