@@ -25,8 +25,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:
 # Path for the CSV's (input and output):
 IN_CSV_LIST = config('IN_CSV_LIST', default='')
 OUT_CSV_LIST = config('OUT_CSV_LIST', default='')
-RAIN_CSV = config('RAIN_CSV', default='')
-NORAIN_CSV = config('NORAIN_CSV', default='')
+FTRD_SVN = config('FTRD_SVN', default='')
 
 # Geographical coordinates for regional subset:
 # The parameters follow the structure: LAT_LIMIT = [min, max] and LON_LIMIT = [min, max]
@@ -158,7 +157,7 @@ def main():
     # '-----------'
     if workflow['save_data']:
         logging.info(f'Saving stuff')
-        file_name = 'concatenated_data.csv'
+        file_name = FTRD_SVN
         utils.tic()
         training_data.to_csv(os.path.join(OUT_CSV_LIST, file_name), index=False, sep=",", decimal='.')
         t_hour, t_min, t_sec = utils.tac_api()
