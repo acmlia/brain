@@ -56,8 +56,10 @@ class PreProcess:
         if file.startswith(".", 0, len(file)):
             logging.info(f"File name starts with point: {file} - Skipping...")
         elif file.endswith(".csv"):
+            utils.tic()
             df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.')
-            logging.info(f'{file} successfully loaded into a dataframe.')
+            t_hour, t_min, t_sec = utils.tac_api()
+            logging.info(f'{file} successfully loaded into a dataframe in {t_hour}h:{t_min}m:{t_sec}s')
         if not df.empty:
             return df
         else:
@@ -100,22 +102,19 @@ class PreProcess:
         """
         Concatenate a given list of dataframes into one single dataframe.
         """
-        # Diagnose list size
+        # Diagnose the size of the input list
         checksum = 0
         logging.info(f'Total number of dataframes in list: {len(df_list)}')
         for idx, df in enumerate(df_list):
             logging.info(f'Dataframe #{idx} size: {len(df)}')
             checksum += len(df)
-        # Concatenation of the monthly Dataframes into the yearly Dataframe:
+        # Concatenation of the dataframes inside the list into a single dataframe:
         try:
-            logging.info(f'Concatenating files... (this may take a while)')
-            utils.tic()
+            logging.info(f'Concatenating files...')
             concatenated_df = pd.concat(df_list, sort=False, ignore_index=True, verify_integrity=True)
-            t_hour, t_min, t_sec = utils.tac_api()
-            logging.info(f'Concatenating successfully done in {t_hour}h:{t_min}m:{t_sec}s\n'
+            logging.info(f'Dataframe concatenation completed!\n'
                          f'Sum of dataframes in the input list: {checksum}\n'
                          f'Final dataframe size --------------: {len(concatenated_df)}')
-
         except ValueError as e:
             logging.error("ValueError:", e)
             sys.exit(1)

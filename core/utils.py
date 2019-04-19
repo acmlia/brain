@@ -1,4 +1,6 @@
+import logging
 import time
+
 
 def tic():
     global _start_time

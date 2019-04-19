@@ -6,6 +6,7 @@
 
 import logging
 import sys
+import os
 
 from decouple import config
 from core.pre_process import PreProcess
@@ -44,11 +45,12 @@ workflow = {
     'read_alternative_csv': False,
     'extract_region': False,
     'concatenate_csv_list_to_df': True,
-    'compute_additional_variables': False,
+    'compute_additional_variables': True,
     'training': False,
     'pre_process_HDF5': False,
     'prediction': False,
-    'validation': False
+    'validation': False,
+    'save_data': True
 }
 
 # ,-----------,
@@ -105,9 +107,9 @@ def main():
     # '------------------------------'
     if workflow['concatenate_csv_list_to_df']:
         logging.info(f'Reading CSV to generate a list of dataframes.')
-        df_list = preprocess.load_csv_list(IN_CSV_LIST)
+        training_data = preprocess.load_csv_list(IN_CSV_LIST)
         logging.info(f'Concatenating list of CSV into a single dataframe')
-        concatenated_df = preprocess.concatenate_df_list(df_list)
+        training_data = preprocess.concatenate_df_list(training_data)
     else:
         logging.info(f'Process skipped by the user: Concatenating list of CSV into a single dataframe')
     # ,------------------------------,
@@ -116,7 +118,7 @@ def main():
     if workflow['compute_additional_variables']:
         logging.info(f'Computing additional variables')
         logging.info(f'Input dataset columns: {list(training_data.columns.values)}')
-        training_data = preprocess.compute_additional_input_vars(concatenated_df)
+        training_data = preprocess.compute_additional_input_vars(training_data)
         logging.info(f'Output dataset columns: {list(training_data.columns.values)}')
     else:
         logging.info(f'Process skipped by the user: Compute additional variables')
@@ -151,6 +153,18 @@ def main():
         logging.info(f'Validating stuff')
     else:
         logging.info(f'Process skipped by the user: Validation')
+    # ,-----------,
+    # | Save data |----------------------------------------------------------------------------------------------------
+    # '-----------'
+    if workflow['save_data']:
+        logging.info(f'Saving stuff')
+        file_name = 'concatenated_data.csv'
+        utils.tic()
+        training_data.to_csv(os.path.join(OUT_CSV_LIST, file_name), index=False, sep=",", decimal='.')
+        t_hour, t_min, t_sec = utils.tac_api()
+        logging.info(f'Dataframe successfully saved as CSV in {t_hour}h:{t_min}m:{t_sec}s')
+    else:
+        logging.info(f'Process skipped by the user: Save data')
 
 
 if __name__ == '__main__':
