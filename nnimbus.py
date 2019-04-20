@@ -5,7 +5,6 @@
 # '----------------'
 
 import logging
-import sys
 import os
 
 from decouple import config
@@ -19,21 +18,48 @@ from core import utils
 # | ENVIRONMENT SETTINGS |----------------------------------------------------------------------------------------------
 # '----------------------'
 
-# Setting up information logs
-logging.basicConfig(format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S', level=logging.DEBUG)
-
 # Path for the CSV's (input and output):
 IN_CSV_LIST = config('IN_CSV_LIST', default='')
-OUT_CSV_LIST = config('OUT_CSV_LIST', default='')
+OUTPUT_DIR = config('OUTPUT_DIR', default='')
+
+# Final training data saving name
 FTRD_SVN = config('FTRD_SVN', default='')
 
-# Geographical coordinates for regional subset:
-# The parameters follow the structure: LAT_LIMIT = [min, max] and LON_LIMIT = [min, max]
+# Geographical coordinates for regional subset
+# The parameters follow the structure:
+# LAT_LIMIT = [min, max] and
+# LON_LIMIT = [min, max]
 LAT_LIMIT = [-34.0, 6.0]
 LON_LIMIT = [-75.0, -35.0]
 
 # Minimal threshold of rain rate:
 THRESHOLD_RAIN = 0.1
+
+# NNIMBUS logs
+LOGFILE = OUTPUT_DIR+'nnimbus.log'
+VERFILE = OUTPUT_DIR+'nnimbus.ver'
+
+# Setting up information logs for every NNIMBUS execution in an external file
+logging.basicConfig(filename=LOGFILE, format='%(asctime)s - %(message)s', datefmt='%d/%m/%Y %H:%M:%S', level=logging.DEBUG)
+
+# check for existing version file to retrieve the number of the last NNIMBUS execution
+if os.path.isfile(VERFILE):
+    with open(VERFILE, 'r+') as f:
+        str_current_version = f.readline().rstrip().split('@')[1]
+        NN_RUN = int(str_current_version) + 1
+        f.seek(0)
+        f.write('ver@'+str(NN_RUN))
+        log_found_message = f'Version file found. Saving logs at {os.path.abspath(LOGFILE)}'
+else:
+    NN_RUN = 0
+    version_warning = f'No version file found in "{os.path.abspath(VERFILE)}" - Tagging this execution as version:{NN_RUN}'
+    print(version_warning)
+    logging.info(version_warning)
+    with open(VERFILE, 'w+') as f:
+        f.seek(0)
+        f.write(f'ver@{NN_RUN}\n')
+
+
 
 # ,--------------------------,
 # | NNIMBUS WORKFLOW OPTIONS |------------------------------------------------------------------------------------------
@@ -43,13 +69,13 @@ workflow = {
     'read_raw_csv': False,
     'read_alternative_csv': False,
     'extract_region': False,
-    'concatenate_csv_list_to_df': True,
-    'compute_additional_variables': True,
-    'training': False,
+    'concatenate_csv_list_to_df': False,
+    'compute_additional_variables': False,
+    'training': True,
     'pre_process_HDF5': False,
     'prediction': False,
     'validation': False,
-    'save_data': True
+    'save_data': False
 }
 
 # ,-----------,
@@ -58,20 +84,20 @@ workflow = {
 
 
 def main():
-    logging.info(f'Starting NNIMBUS\n')
+    greatings_header = f'| Starting NNIMBUS # NN_RUN:{NN_RUN} |'
+    separator = utils.repeat_to_length('-', len(greatings_header) - 2)
+    logging.info(f',{separator},')
+    logging.info(greatings_header)
+    logging.info(f'\'{separator}\'')
+    print(f',{separator},\n' +
+          greatings_header + '\n' +
+          f'\'{separator}\'')
 
     # Initializing core classes
     preprocess = PreProcess()
-    preprocess.status()
-
     training = Training()
-    training.status()
-
     prediction = Prediction()
-    prediction.status()
-
     validation = Validation()
-    validation.status()
 
     # ,----------------------,
     # | Reading raw CSV Data |------------------------------------------------------------------------------------------
@@ -126,6 +152,7 @@ def main():
     # '----------'
     if workflow['training']:
         logging.info(f'Training')
+        training.status()
     else:
         logging.info(f'Process skipped by the user: Training')
 
@@ -159,7 +186,7 @@ def main():
         logging.info(f'Saving stuff')
         file_name = FTRD_SVN
         utils.tic()
-        training_data.to_csv(os.path.join(OUT_CSV_LIST, file_name), index=False, sep=",", decimal='.')
+        training_data.to_csv(os.path.join(OUTPUT_DIR, file_name), index=False, sep=",", decimal='.')
         t_hour, t_min, t_sec = utils.tac_api()
         logging.info(f'Dataframe successfully saved as CSV in {t_hour}h:{t_min}m:{t_sec}s')
     else:
@@ -169,4 +196,8 @@ def main():
 if __name__ == '__main__':
     utils.tic()
     main()
-    utils.tac()
+    t_hour, t_min, t_sec = utils.tac_api()
+    final_message = f'Elapsed execution time: {t_hour}h : {t_min}m : {t_sec}s\n'
+    logging.info(utils.repeat_to_length('-', len(final_message)))
+    logging.info(final_message)
+
