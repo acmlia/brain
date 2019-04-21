@@ -58,7 +58,7 @@ class PreProcess:
         elif file.endswith(".csv"):
             utils.tic()
             df = pd.read_csv(os.path.join(path, file), sep=',', decimal='.')
-            t_hour, t_min, t_sec = utils.tac_api()
+            t_hour, t_min, t_sec = utils.tac()
             logging.info(f'{file} successfully loaded into a dataframe in {t_hour}h:{t_min}m:{t_sec}s')
         if not df.empty:
             return df
